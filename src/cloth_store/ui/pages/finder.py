@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import time
 from pathlib import Path
 
 import streamlit as st
@@ -165,6 +166,7 @@ def _generate_photo(
         return
 
     names = ", ".join(path.name for path in sources)
+    started = time.perf_counter()
     with st.spinner(f"Sending {len(sources)} photo{'s' if len(sources) != 1 else ''}..."):
         try:
             image_path = generate_mannequin_image(
@@ -178,9 +180,14 @@ def _generate_photo(
             photo = GeneratedPhoto(
                 source_name=names,
                 image_path=str(image_path),
+                elapsed_seconds=time.perf_counter() - started,
             )
         except Exception as error:
-            photo = GeneratedPhoto(source_name=names, error=str(error))
+            photo = GeneratedPhoto(
+                source_name=names,
+                error=str(error),
+                elapsed_seconds=time.perf_counter() - started,
+            )
     st.session_state["photos"] = [photo]
 
 
@@ -210,6 +217,7 @@ def _generate_text(
         return
 
     names = ", ".join(path.name for path in sources)
+    started = time.perf_counter()
     with st.spinner("Writing the Instagram caption..."):
         try:
             text, text_path = generate_marketing_text(
@@ -220,7 +228,16 @@ def _generate_text(
                 output_dir=OUTPUT_DIR,
                 suit_code=suit_code,
             )
-            item = MarketingText(source_name=names, text=text, text_path=str(text_path))
+            item = MarketingText(
+                source_name=names,
+                text=text,
+                text_path=str(text_path),
+                elapsed_seconds=time.perf_counter() - started,
+            )
         except Exception as error:
-            item = MarketingText(source_name=names, error=str(error))
+            item = MarketingText(
+                source_name=names,
+                error=str(error),
+                elapsed_seconds=time.perf_counter() - started,
+            )
     st.session_state["texts"] = [item]

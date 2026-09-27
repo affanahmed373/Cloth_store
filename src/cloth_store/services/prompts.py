@@ -11,7 +11,7 @@ Do not make a collage or a grid. Show one person or mannequin, in one frame.
 Use either a fashion mannequin or a generated catalog model wearing the outfit. A model is allowed. Do not force a mannequin.
 The person or mannequin and the cloth must look photographic and real: natural fabric, real folds, and no plastic or illustrated look.
 Copy the neckline exactly. Keep its shape, embroidery, buttons, collar, and opening. Do not invent a different neck.
-Plain light studio background, soft even lighting.
+Use a real photo studio: a soft warm off-white seamless wall that curves into a light floor, with a gentle contact shadow under the feet. Soft even daylight. Do not use a flat pure-white cutout or a busy room.
 No text, no watermark, no logo, no price. Do not copy a real person's face.
 Match the pieces in the photo. Do not add or remove a garment.
 If the bottom is a shalwar, keep a shalwar. If it is a trouser, keep a trouser.

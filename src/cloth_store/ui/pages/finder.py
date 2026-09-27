@@ -91,7 +91,7 @@ def _prompt_editors(*, disabled: bool = False) -> tuple[str, str]:
             "Image prompt",
             IMAGE_PROMPT_PATH,
             DEFAULT_IMAGE_PROMPT,
-            "image_prompt_garment",
+            "image_prompt_studio",
             disabled=disabled,
         )
     with text_column:

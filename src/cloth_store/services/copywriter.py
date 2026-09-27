@@ -6,7 +6,7 @@ from pathlib import Path
 
 from openai import OpenAI
 
-from cloth_store.services.library import slug, to_data_url
+from cloth_store.services.library import instagram_stem, to_data_url
 
 
 def generate_marketing_text(
@@ -16,7 +16,7 @@ def generate_marketing_text(
     *,
     model: str,
     output_dir: Path,
-    index: int,
+    suit_code: str,
 ) -> tuple[str, Path]:
     if not prompt.strip():
         raise ValueError("The saved prompt is empty.")
@@ -40,6 +40,6 @@ def generate_marketing_text(
         raise RuntimeError("The text API returned an empty reply.")
 
     output_dir.mkdir(parents=True, exist_ok=True)
-    text_path = output_dir / f"{index:02d}-{slug(source.stem)}.txt"
+    text_path = output_dir / f"{instagram_stem(suit_code)}.txt"
     text_path.write_text(text + "\n", encoding="utf-8")
     return text, text_path

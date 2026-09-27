@@ -8,6 +8,8 @@ from cloth_store.config import (
     TEXT_PROMPT_PATH,
     read_api_key,
     resolve_folder,
+    text_api_base_url,
+    text_model,
 )
 
 
@@ -29,6 +31,13 @@ def test_api_key_setting_wins_over_the_openai_name(monkeypatch) -> None:
     monkeypatch.setenv("API_KEY", "primary")
     monkeypatch.setenv("OPENAI_API_KEY", "legacy")
     assert read_api_key("") == "primary"
+
+
+def test_text_defaults_to_deepseek(monkeypatch) -> None:
+    monkeypatch.delenv("TEXT_MODEL", raising=False)
+    monkeypatch.delenv("TEXT_API_BASE_URL", raising=False)
+    assert text_model() == "deepseek-flash"
+    assert text_api_base_url() == "https://api.deepseek.com"
 
 
 def test_resolve_folder_accepts_relative_and_absolute_paths(tmp_path: Path) -> None:

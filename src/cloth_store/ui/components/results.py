@@ -20,6 +20,8 @@ def render_photos(photos: list[GeneratedPhoto]) -> None:
                 st.warning(photo.error)
         with details:
             st.write(photo.source_name)
+            if photo.image_path:
+                st.caption("1080×1350, 4:5, ready for Instagram.")
             if photo.prompt_path:
                 st.caption(f"Prompt saved to {photo.prompt_path}")
             if photo.error and photo.image_path:

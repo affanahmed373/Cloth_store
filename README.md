@@ -11,13 +11,15 @@ pip install -r requirements.txt
 cp .env.example .env
 ```
 
-Put the API key in `.env`. To use another OpenAI-compatible server later, change the base URL and model names:
+Put the API keys in `.env`. The image call stays on an OpenAI-compatible server. Captions use DeepSeek:
 
 ```bash
 API_KEY=sk-...
 API_BASE_URL=https://api.openai.com/v1
 IMAGE_MODEL=gpt-image-1-mini
-TEXT_MODEL=gpt-4o-mini
+TEXT_API_KEY=sk-...
+TEXT_API_BASE_URL=https://api.deepseek.com
+TEXT_MODEL=deepseek-flash
 ```
 
 The same fields are in the sidebar, so you can switch servers without editing code.
@@ -28,9 +30,9 @@ The same fields are in the sidebar, so you can switch servers without editing co
 streamlit run app.py
 ```
 
-`data/images/` includes a green placeholder, `sample_fabric.png`. Replace it with JPG, PNG, or WEBP dress photos, or type another folder path in the sidebar. Select a photo, edit the saved prompt if you want, add notes, then press **Generate image** or **Generate text**.
+Put JPG, PNG, or WEBP dress photos in `data/images/`, or type another folder path in the sidebar. Choose one photo, enter the suit code, edit the saved prompt if you want, add notes, then press **Generate image** or **Generate text**.
 
-Created photos, the exact prompt used, and the marketing text are saved under `data/output/`.
+**Generate image** saves one portrait, `instaimage-<code>.png`, at 1080×1350 (4:5) for Instagram. **Generate text** writes the shop caption with that same code, using DeepSeek. Both files land in `data/output/`.
 
 ## Tests
 

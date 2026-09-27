@@ -18,7 +18,8 @@ TEXT_PROMPT_PATH = PROMPTS_DIR / "text_prompt.txt"
 load_dotenv(PROJECT_ROOT / ".env")
 
 DEFAULT_API_BASE_URL = "https://api.openai.com/v1"
-DEFAULT_TEXT_MODEL = "gpt-4o-mini"
+DEFAULT_TEXT_API_BASE_URL = "https://api.deepseek.com"
+DEFAULT_TEXT_MODEL = "deepseek-flash"
 DEFAULT_IMAGE_MODEL = "gpt-image-1-mini"
 
 
@@ -26,8 +27,16 @@ def api_base_url() -> str:
     return os.getenv("API_BASE_URL", DEFAULT_API_BASE_URL).strip() or DEFAULT_API_BASE_URL
 
 
+def text_api_base_url() -> str:
+    return os.getenv("TEXT_API_BASE_URL", DEFAULT_TEXT_API_BASE_URL).strip() or DEFAULT_TEXT_API_BASE_URL
+
+
 def text_model() -> str:
-    return os.getenv("TEXT_MODEL") or os.getenv("OPENAI_VISION_MODEL") or DEFAULT_TEXT_MODEL
+    return os.getenv("TEXT_MODEL") or DEFAULT_TEXT_MODEL
+
+
+def text_api_key() -> str:
+    return os.getenv("TEXT_API_KEY", "").strip() or os.getenv("DEEPSEEK_API_KEY", "").strip()
 
 
 def image_model() -> str:

@@ -41,3 +41,41 @@ def to_data_url(path: Path) -> str:
 def slug(value: str) -> str:
     cleaned = re.sub(r"[^a-z0-9]+", "-", value.lower()).strip("-")
     return cleaned[:40] or "dress"
+
+
+INSTAGRAM_SIZE = (1080, 1350)
+
+
+def instagram_stem(suit_code: str) -> str:
+    cleaned = re.sub(r"[^\w.-]+", "-", suit_code.strip()).strip(".-")
+    if not cleaned:
+        raise ValueError("Enter a suit code.")
+    return f"instaimage-{cleaned}"
+
+
+def to_instagram_png(raw: bytes) -> bytes:
+    """Center-crop to 4:5 and resize to the Instagram portrait size."""
+    try:
+        with Image.open(BytesIO(raw)) as image:
+            frame = image.convert("RGB")
+    except Exception as error:
+        raise RuntimeError("The image API did not return a photo that could be sized for Instagram.") from error
+
+    width, height = frame.size
+    if width < 1 or height < 1:
+        raise RuntimeError("The image API did not return a photo that could be sized for Instagram.")
+
+    target_ratio = 4 / 5
+    if width / height > target_ratio:
+        new_width = int(height * target_ratio)
+        left = (width - new_width) // 2
+        frame = frame.crop((left, 0, left + new_width, height))
+    else:
+        new_height = int(width / target_ratio)
+        top = (height - new_height) // 2
+        frame = frame.crop((0, top, width, top + new_height))
+
+    frame = frame.resize(INSTAGRAM_SIZE, Image.Resampling.LANCZOS)
+    buffer = BytesIO()
+    frame.save(buffer, format="PNG")
+    return buffer.getvalue()

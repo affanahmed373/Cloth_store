@@ -10,12 +10,13 @@ def test_sends_the_dress_photo_and_saves_the_text(image_file: Path, tmp_path: Pa
         client,
         image_file,
         "Write the listing.\n\nShop notes:\nEid launch",
-        model="gpt-4o-mini",
+        model="deepseek-flash",
         output_dir=tmp_path,
-        index=1,
+        suit_code="1005",
     )
 
     content = client.completions.kwargs["messages"][0]["content"]
+    assert text_path.name == "instaimage-1005.txt"
     assert text.startswith("Emerald lawn suit")
     assert text_path.read_text(encoding="utf-8").startswith("Emerald lawn suit")
     assert content[0]["text"].endswith("Eid launch")

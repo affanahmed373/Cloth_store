@@ -1,8 +1,9 @@
+from io import BytesIO
 from pathlib import Path
 
 from PIL import Image
 
-from cloth_store.services.library import list_images, slug, to_jpeg_buffer
+from cloth_store.services.library import instagram_stem, list_images, slug, to_instagram_png, to_jpeg_buffer
 
 
 def test_list_images_keeps_photos_and_sorts_them(tmp_path: Path) -> None:
@@ -26,6 +27,18 @@ def test_to_jpeg_buffer_is_a_named_jpeg(image_file: Path) -> None:
     buffer = to_jpeg_buffer(image_file, max_side=16)
     assert buffer.name == "reference.jpg"
     assert buffer.getvalue()[:2] == b"\xff\xd8"
+
+
+def test_instagram_name_uses_the_suit_code() -> None:
+    assert instagram_stem(" 1005 ") == "instaimage-1005"
+
+
+def test_instagram_png_is_four_by_five() -> None:
+    raw = BytesIO()
+    Image.new("RGB", (100, 200), "red").save(raw, format="PNG")
+    fitted = to_instagram_png(raw.getvalue())
+    with Image.open(BytesIO(fitted)) as image:
+        assert image.size == (1080, 1350)
 
 
 def test_slug_cleans_and_limits_names() -> None:

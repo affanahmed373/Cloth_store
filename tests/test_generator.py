@@ -1,28 +1,39 @@
 import base64
+from io import BytesIO
 from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
+from PIL import Image
 
 from cloth_store.services.generator import generate_mannequin_image
 from tests.fakes import FakeImageClient, FakeImages
 
 
+def _png_b64(width: int = 90, height: int = 160) -> str:
+    buffer = BytesIO()
+    Image.new("RGB", (width, height), (120, 20, 40)).save(buffer, format="PNG")
+    return base64.b64encode(buffer.getvalue()).decode("ascii")
+
+
 def test_sends_the_dress_and_saves_the_prompt(image_file: Path, tmp_path: Path) -> None:
-    images = FakeImages(edit_b64=base64.b64encode(b"png-bytes").decode("ascii"))
+    images = FakeImages(edit_b64=_png_b64())
     image_path, prompt_path = generate_mannequin_image(
         FakeImageClient(images),
         image_file,
         "Show this dress on a mannequin.\n\nShop notes:\nEid launch",
         model="gpt-image-1-mini",
         output_dir=tmp_path,
-        index=1,
+        suit_code="1005",
     )
 
-    assert image_path.name == "01-swatch.png"
-    assert image_path.read_bytes() == b"png-bytes"
+    assert image_path.name == "instaimage-1005.png"
+    with Image.open(image_path) as saved:
+        assert saved.size == (1080, 1350)
     assert "Eid launch" in prompt_path.read_text(encoding="utf-8")
     assert images.edit_kwargs["image"].name == "reference.jpg"
+    assert images.edit_kwargs["size"] == "1024x1536"
+    assert images.edit_kwargs["n"] == 1
     assert images.edit_kwargs["prompt"].startswith("Show this dress")
     assert images.generate_kwargs is None
 
@@ -36,7 +47,7 @@ def test_edit_errors_are_not_replaced_with_a_text_only_image(image_file: Path, t
             "Show the dress.",
             model="gpt-image-1-mini",
             output_dir=tmp_path,
-            index=1,
+            suit_code="1005",
         )
 
 
@@ -49,7 +60,7 @@ def test_rejects_an_empty_image_response(image_file: Path, tmp_path: Path) -> No
             "Show the dress.",
             model="gpt-image-1-mini",
             output_dir=tmp_path,
-            index=1,
+            suit_code="1005",
         )
 
 
@@ -60,7 +71,7 @@ def test_downloads_a_url_when_the_api_does_not_return_bytes(
 
     class Response:
         def read(self) -> bytes:
-            return b"from-url"
+            return base64.b64decode(_png_b64(width=200, height=200))
 
         def __enter__(self) -> "Response":
             return self
@@ -75,6 +86,8 @@ def test_downloads_a_url_when_the_api_does_not_return_bytes(
         "Show the dress.",
         model="compatible-image",
         output_dir=tmp_path,
-        index=2,
+        suit_code="1005",
     )
-    assert image_path.read_bytes() == b"from-url"
+    assert image_path.name == "instaimage-1005.png"
+    with Image.open(image_path) as saved:
+        assert saved.size == (1080, 1350)

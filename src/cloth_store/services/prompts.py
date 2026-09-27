@@ -14,19 +14,41 @@ Match the pieces in the photo. Do not add or remove a garment.
 If the bottom is a shalwar, keep a shalwar. If it is a trouser, keep a trouser.
 Keep the opening near the foot as it is: a free open hem, or an elastic gathered cuff. Do not change one into the other.
 A three-piece outfit is a kameez or shirt, a bottom, and a dupatta. Show all three only when all three are in the photo.
-A two-piece outfit has only two garments: the kameez or shirt, plus either a dupatta or a bottom (shalwar or trouser), whichever pair is actually in the photo."""
+A two-piece outfit has only two garments: the kameez or shirt, plus either a dupatta or a bottom (shalwar or trouser), whichever pair is actually in the photo.
+Frame the shot as one vertical 4:5 Instagram portrait. Keep the full outfit inside the frame, with a little space above the head and below the feet."""
 
-DEFAULT_TEXT_PROMPT = """Write marketing text for an online shop listing of the Pakistani dress in the photo.
-Describe only what is visible: outfit type, colors, pattern, and fabric when it is clear.
-Return a short product title, two sentences for the product page, and five hashtags.
-Do not invent a price, a brand name, or details that are not in the photo.
-State the pieces you can see.
+DEFAULT_TEXT_PROMPT = """Write one Instagram caption for the Pakistani outfit in the photo.
+Follow this layout. Change the description so it matches the photo, and use the suit code from the line that starts with "Suit code:".
+Put that same code after "Code:" in the first line and again in "mention Code". Do not invent a different code.
+Keep the shop name, the address, the emojis, and the closing line.
+
+✨ **New Arrival | Code: CODE** ✨
+
+DESCRIPTION
+
+📍 Available at **Z.J. Mode**
+Münzstr. 19, 47051 Duisburg, Deutschland
+
+To order or ask about price, size, and availability:
+💌 Send us a DM and mention **Code CODE**
+📦 Delivery is also available — DM us for delivery details
+🏬 Or visit us in store at **Z.J. Mode, Duisburg**
+
+Apna style, Pardesi style ✨
+
+HASHTAGS
+
+Write DESCRIPTION as one paragraph in this style:
+A rich maroon embroidered suit with delicate floral detailing, elegant embroidered sleeve cuffs, matching plain trousers, and a soft matching dupatta. The graceful tassel detail and subtle shimmer make this a beautiful choice for Eid, dawats, family gatherings, weddings, and special occasions. ❤️✨
+Describe only what is visible. State the pieces you can see.
 Say whether the bottom is a shalwar or a trouser.
 Say whether the opening near the foot is free (an open hem) or elastic (a gathered cuff).
 Say whether the set is three-piece or two-piece.
 A three-piece set is a kameez or shirt, a bottom, and a dupatta.
 A two-piece set is the kameez or shirt plus one other garment. Say whether that other garment is a dupatta or a bottom (shalwar or trouser).
-Do not call it three-piece when a dupatta or a bottom is missing, and do not mention a piece that is not in the photo."""
+Do not call it three-piece when a dupatta or a bottom is missing, and do not mention a piece that is not in the photo.
+Do not invent a price.
+For HASHTAGS, keep #PardesiStyle #PakistaniFashionGermany #IndianFashionGermany #DuisburgFashion #DesiFashionGermany #PakistaniSuits #EidOutfit #WeddingWear #Duisburg #NRWFashion #PakistaniFashion #IndianEthnicWear and add a few that match the color and the outfit."""
 
 
 def load_prompt(path: Path, default: str) -> str:
@@ -43,11 +65,15 @@ def save_prompt(path: Path, text: str) -> None:
     path.write_text(cleaned + "\n", encoding="utf-8")
 
 
-def compose_prompt(general: str, extra: str) -> str:
+def compose_prompt(general: str, extra: str, suit_code: str = "") -> str:
     base = general.strip()
-    notes = extra.strip()
     if not base:
         raise ValueError("The saved prompt is empty.")
-    if not notes:
-        return base
-    return f"{base}\n\nShop notes:\n{notes}"
+    parts = [base]
+    code = suit_code.strip()
+    if code:
+        parts.append(f"Suit code: {code}")
+    notes = extra.strip()
+    if notes:
+        parts.append(f"Shop notes:\n{notes}")
+    return "\n\n".join(parts)

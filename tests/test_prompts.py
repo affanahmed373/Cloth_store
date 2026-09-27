@@ -24,6 +24,11 @@ def test_checked_in_prompts_keep_the_piece_rules() -> None:
         assert "dupatta" in prompt
 
 
+def test_compose_prompt_adds_the_suit_code() -> None:
+    text = compose_prompt("Write the listing.", "Eid launch", "1005")
+    assert text == "Write the listing.\n\nSuit code: 1005\n\nShop notes:\nEid launch"
+
+
 def test_compose_prompt_appends_shop_notes() -> None:
     assert compose_prompt("Show the dress.", "  ") == "Show the dress."
     assert compose_prompt("Show the dress.", "Eid launch") == "Show the dress.\n\nShop notes:\nEid launch"

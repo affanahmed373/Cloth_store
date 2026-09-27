@@ -1,4 +1,4 @@
-"""Generated mannequin photos and marketing text."""
+"""The finished Instagram post: photo on the left, caption on the right."""
 
 from __future__ import annotations
 
@@ -18,36 +18,38 @@ def format_elapsed(seconds: float | None) -> str | None:
     return f"Took {minutes} min {rest} s"
 
 
-def render_photos(photos: list[GeneratedPhoto]) -> None:
-    st.subheader("Catalog photos")
-    for photo in photos:
-        image, details = st.columns([1, 2])
-        with image:
-            if photo.image_path and Path(photo.image_path).is_file():
-                st.image(photo.image_path, width="stretch")
-            elif photo.error:
-                st.warning(photo.error)
-        with details:
-            st.write(photo.source_name)
-            if photo.image_path:
-                st.caption("1080×1350, 4:5, ready for Instagram.")
-            elapsed = format_elapsed(photo.elapsed_seconds)
-            if elapsed:
-                st.caption(elapsed)
-            if photo.error and photo.image_path:
-                st.warning(photo.error)
+def render_post(photo: GeneratedPhoto | None, text: MarketingText | None) -> None:
+    st.subheader("Instagram post")
+    with st.container(border=True):
+        image_col, caption_col = st.columns([2, 3], gap="large")
+        with image_col:
+            _render_image(photo)
+        with caption_col:
+            _render_caption(text)
 
 
-def render_texts(texts: list[MarketingText]) -> None:
-    st.subheader("Marketing text")
-    for item in texts:
-        st.write(item.source_name)
-        if item.text:
-            st.write(item.text)
-        if item.text_path:
-            st.caption(f"Text saved to {item.text_path}")
-        elapsed = format_elapsed(item.elapsed_seconds)
-        if elapsed:
-            st.caption(elapsed)
-        if item.error:
-            st.warning(item.error)
+def _render_image(photo: GeneratedPhoto | None) -> None:
+    if photo and photo.image_path and Path(photo.image_path).is_file():
+        st.image(photo.image_path, width="stretch")
+        st.caption("1080×1350, 4:5, ready for Instagram.")
+    elif photo is None or not photo.error:
+        st.info("Image not created yet.")
+    if photo and photo.error:
+        st.warning(photo.error)
+    elapsed = format_elapsed(photo.elapsed_seconds if photo else None)
+    if elapsed:
+        st.caption(elapsed)
+
+
+def _render_caption(text: MarketingText | None) -> None:
+    if text and text.text:
+        st.markdown(text.text)
+    elif text is None or not text.error:
+        st.info("Caption not written yet.")
+    if text and text.text_path:
+        st.caption(f"Text saved to {text.text_path}")
+    if text and text.error:
+        st.warning(text.error)
+    elapsed = format_elapsed(text.elapsed_seconds if text else None)
+    if elapsed:
+        st.caption(elapsed)

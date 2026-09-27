@@ -1,2 +1,6 @@
 .block-container { padding-top: 1.5rem; max-width: 1100px; }
 div[data-testid="stCaption"] { margin-top: -0.4rem; }
+div[data-testid="stVerticalBlockBorderWrapper"] {
+  padding: 0.75rem 0.5rem 0.25rem;
+  margin-top: 0.5rem;
+}

@@ -1,6 +1,6 @@
 # Cloth store
 
-Small Streamlit app that reads outfit or fabric photos from a local folder, sends them to ChatGPT, and returns Pakistani dress ideas. With image generation turned on, it also saves catalog-style photos in `output/`.
+Small Streamlit app for an online clothing shop. Put a dress photo in a folder, press **Generate image**, and an OpenAI-compatible API returns that outfit on a mannequin. **Generate text** writes the listing copy. The general prompts are saved in `prompts/`, and your own notes are added for that run only.
 
 ## Setup
 
@@ -11,18 +11,16 @@ pip install -r requirements.txt
 cp .env.example .env
 ```
 
-Put your OpenAI API key in `.env`:
+Put the API key in `.env`. To use another OpenAI-compatible server later, change the base URL and model names:
 
 ```bash
-OPENAI_API_KEY=sk-...
+API_KEY=sk-...
+API_BASE_URL=https://api.openai.com/v1
+IMAGE_MODEL=gpt-image-1-mini
+TEXT_MODEL=gpt-4o-mini
 ```
 
-Optional model overrides:
-
-```bash
-OPENAI_VISION_MODEL=gpt-4o-mini
-OPENAI_IMAGE_MODEL=gpt-image-1-mini
-```
+The same fields are in the sidebar, so you can switch servers without editing code.
 
 ## Run
 
@@ -30,9 +28,9 @@ OPENAI_IMAGE_MODEL=gpt-image-1-mini
 streamlit run app.py
 ```
 
-`data/images/` includes a green placeholder, `sample_fabric.png`. Replace it with JPG, PNG, or WEBP outfit or fabric photos, or type another folder path in the sidebar. Select the photos, then choose **Find Pakistani dresses**.
+`data/images/` includes a green placeholder, `sample_fabric.png`. Replace it with JPG, PNG, or WEBP dress photos, or type another folder path in the sidebar. Select a photo, edit the saved prompt if you want, add notes, then press **Generate image** or **Generate text**.
 
-The vision call reads color, pattern, and mood. The image call uses those photos as reference and saves new dress photos under `data/output/`. Uncheck **Also create dress photos** if you only want the written suggestions.
+Created photos, the exact prompt used, and the marketing text are saved under `data/output/`.
 
 ## Tests
 
@@ -45,15 +43,16 @@ pytest
 
 ```text
 app.py                         Streamlit entry point
+prompts/                       saved image and text prompts
 src/cloth_store/
   config.py                    paths and API settings
-  models.py                    dress results
-  services/                    photo folder, stylist, image creation
+  models.py                    generated photo and text results
+  services/                    client, prompts, image call, text call
   ui/
     styles.css
-    components/                sidebar, gallery, result cards
-    pages/                     screens
-data/images/                   photos you send
-data/output/                   created dress photos
+    components/                sidebar, gallery, prompt editors, results
+    pages/                     the catalog screen
+data/images/                   dress photos you send
+data/output/                   mannequin photos and marketing text
 tests/                         pytest, no live API key required
 ```

@@ -1,0 +1,4 @@
+Write marketing text for an online shop listing of the Pakistani dress in the photo.
+Describe only what is visible: outfit type, colors, pattern, and fabric when it is clear.
+Return a short product title, two sentences for the product page, and five hashtags.
+Do not invent a price, a brand name, or details that are not in the photo.

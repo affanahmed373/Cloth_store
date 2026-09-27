@@ -11,23 +11,31 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DATA_DIR = PROJECT_ROOT / "data"
 IMAGES_DIR = DATA_DIR / "images"
 OUTPUT_DIR = DATA_DIR / "output"
+PROMPTS_DIR = PROJECT_ROOT / "prompts"
+IMAGE_PROMPT_PATH = PROMPTS_DIR / "image_prompt.txt"
+TEXT_PROMPT_PATH = PROMPTS_DIR / "text_prompt.txt"
 
 load_dotenv(PROJECT_ROOT / ".env")
 
-DEFAULT_VISION_MODEL = "gpt-4o-mini"
+DEFAULT_API_BASE_URL = "https://api.openai.com/v1"
+DEFAULT_TEXT_MODEL = "gpt-4o-mini"
 DEFAULT_IMAGE_MODEL = "gpt-image-1-mini"
 
 
-def vision_model() -> str:
-    return os.getenv("OPENAI_VISION_MODEL", DEFAULT_VISION_MODEL)
+def api_base_url() -> str:
+    return os.getenv("API_BASE_URL", DEFAULT_API_BASE_URL).strip() or DEFAULT_API_BASE_URL
+
+
+def text_model() -> str:
+    return os.getenv("TEXT_MODEL") or os.getenv("OPENAI_VISION_MODEL") or DEFAULT_TEXT_MODEL
 
 
 def image_model() -> str:
-    return os.getenv("OPENAI_IMAGE_MODEL", DEFAULT_IMAGE_MODEL)
+    return os.getenv("IMAGE_MODEL") or os.getenv("OPENAI_IMAGE_MODEL") or DEFAULT_IMAGE_MODEL
 
 
 def env_api_key() -> str:
-    return os.getenv("OPENAI_API_KEY", "").strip()
+    return os.getenv("API_KEY", "").strip() or os.getenv("OPENAI_API_KEY", "").strip()
 
 
 def read_api_key(typed: str) -> str:

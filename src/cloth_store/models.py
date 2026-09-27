@@ -1,55 +1,21 @@
-"""Dress suggestions returned by the stylist."""
+"""Results saved after an API call."""
 
 from __future__ import annotations
 
-import json
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 
 @dataclass
-class Dress:
-    name: str
-    category: str
-    occasion: str
-    fabric: str
-    colors: list[str]
-    description: str
-    why_it_matches: str
+class GeneratedPhoto:
+    source_name: str
     image_path: str | None = None
-    image_error: str | None = None
-
-    @classmethod
-    def from_payload(cls, item: object) -> Dress | None:
-        if not isinstance(item, dict):
-            return None
-        colors = item.get("colors") or []
-        if isinstance(colors, str):
-            colors = [colors]
-        if not isinstance(colors, list):
-            colors = []
-        return cls(
-            name=str(item.get("name") or "Pakistani outfit").strip(),
-            category=str(item.get("category") or "shalwar kameez").strip(),
-            occasion=str(item.get("occasion") or "").strip(),
-            fabric=str(item.get("fabric") or "").strip(),
-            colors=[str(color).strip() for color in colors if str(color).strip()],
-            description=str(item.get("description") or "").strip(),
-            why_it_matches=str(item.get("why_it_matches") or "").strip(),
-        )
+    prompt_path: str | None = None
+    error: str | None = None
 
 
 @dataclass
-class SuggestionResult:
-    image_summary: str
-    dresses: list[Dress] = field(default_factory=list)
-
-    @classmethod
-    def from_payload(cls, payload: str) -> SuggestionResult:
-        data = json.loads(payload)
-        if not isinstance(data, dict):
-            raise ValueError("ChatGPT did not return a JSON object.")
-        dresses = [Dress.from_payload(item) for item in data.get("dresses") or []]
-        return cls(
-            image_summary=str(data.get("image_summary") or "").strip(),
-            dresses=[dress for dress in dresses if dress],
-        )
+class MarketingText:
+    source_name: str
+    text: str = ""
+    text_path: str | None = None
+    error: str | None = None

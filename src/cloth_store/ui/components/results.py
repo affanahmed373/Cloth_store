@@ -1,4 +1,4 @@
-"""Suggested outfit cards."""
+"""Generated mannequin photos and marketing text."""
 
 from __future__ import annotations
 
@@ -6,28 +6,33 @@ from pathlib import Path
 
 import streamlit as st
 
-from cloth_store.models import SuggestionResult
+from cloth_store.models import GeneratedPhoto, MarketingText
 
 
-def render_results(result: SuggestionResult) -> None:
-    st.divider()
-    if result.image_summary:
-        st.write(result.image_summary)
-    for dress in result.dresses:
-        photo, details = st.columns([1, 2])
-        with photo:
-            if dress.image_path and Path(dress.image_path).is_file():
-                st.image(dress.image_path, width="stretch")
-            elif dress.image_error:
-                st.warning(dress.image_error)
+def render_photos(photos: list[GeneratedPhoto]) -> None:
+    st.subheader("Mannequin photos")
+    for photo in photos:
+        image, details = st.columns([1, 2])
+        with image:
+            if photo.image_path and Path(photo.image_path).is_file():
+                st.image(photo.image_path, width="stretch")
+            elif photo.error:
+                st.warning(photo.error)
         with details:
-            st.subheader(dress.name)
-            meta = " · ".join(part for part in (dress.category, dress.occasion, dress.fabric) if part)
-            if meta:
-                st.caption(meta)
-            if dress.colors:
-                st.write("Colors: " + ", ".join(dress.colors))
-            if dress.description:
-                st.write(dress.description)
-            if dress.why_it_matches:
-                st.write(dress.why_it_matches)
+            st.write(photo.source_name)
+            if photo.prompt_path:
+                st.caption(f"Prompt saved to {photo.prompt_path}")
+            if photo.error and photo.image_path:
+                st.warning(photo.error)
+
+
+def render_texts(texts: list[MarketingText]) -> None:
+    st.subheader("Marketing text")
+    for item in texts:
+        st.write(item.source_name)
+        if item.text:
+            st.write(item.text)
+        if item.text_path:
+            st.caption(f"Text saved to {item.text_path}")
+        if item.error:
+            st.warning(item.error)

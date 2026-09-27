@@ -30,9 +30,9 @@ The same fields are in the sidebar, so you can switch servers without editing co
 streamlit run app.py
 ```
 
-Put JPG, PNG, or WEBP dress photos in `data/images/`, or type another folder path in the sidebar. Choose one photo, enter the suit code, edit the saved prompt if you want, add notes, then press **Generate image** or **Generate text**.
+Put JPG, PNG, or WEBP dress photos in `data/images/`, or type another folder path in the sidebar. Select up to 10 photos of the same outfit, enter the suit code, then press **Generate image** or **Generate text**.
 
-**Generate image** saves one portrait, `instaimage-<code>.png`, at 1080×1350 (4:5) for Instagram. **Generate text** writes the shop caption with that same code, using DeepSeek. Both files land in `data/output/`.
+**Generate image** sends those photos in one call and saves one portrait, `instaimage-<code>.png`, at 1080×1350 (4:5) for Instagram. **Generate text** is a separate call. It sends the same photos to DeepSeek with the text prompt and writes one caption, which can also be reused on Facebook. Both files land in `data/output/`.
 
 ## Tests
 

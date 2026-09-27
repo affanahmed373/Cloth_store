@@ -44,6 +44,7 @@ def slug(value: str) -> str:
 
 
 INSTAGRAM_SIZE = (1080, 1350)
+MAX_REFERENCE_PHOTOS = 10
 
 
 def instagram_stem(suit_code: str) -> str:

@@ -1,4 +1,4 @@
-"""Send a dress photo to an image API and save the mannequin shot."""
+"""Send up to ten views of one outfit and save a single Instagram photo."""
 
 from __future__ import annotations
 
@@ -8,7 +8,12 @@ from pathlib import Path
 
 from openai import OpenAI
 
-from cloth_store.services.library import instagram_stem, to_instagram_png, to_jpeg_buffer
+from cloth_store.services.library import (
+    MAX_REFERENCE_PHOTOS,
+    instagram_stem,
+    to_instagram_png,
+    to_jpeg_buffer,
+)
 
 
 def image_bytes(image: object) -> bytes:
@@ -24,7 +29,7 @@ def image_bytes(image: object) -> bytes:
 
 def generate_mannequin_image(
     client: OpenAI,
-    source: Path,
+    sources: list[Path],
     prompt: str,
     *,
     model: str,
@@ -33,11 +38,19 @@ def generate_mannequin_image(
 ) -> tuple[Path, Path]:
     if not prompt.strip():
         raise ValueError("The saved prompt is empty.")
+    if not sources:
+        raise ValueError("Select at least one photo.")
+    if len(sources) > MAX_REFERENCE_PHOTOS:
+        raise ValueError(f"Select at most {MAX_REFERENCE_PHOTOS} photos.")
     stem = instagram_stem(suit_code)
-    upload = to_jpeg_buffer(source, max_side=1536)
+    uploads = []
+    for index, source in enumerate(sources, start=1):
+        upload = to_jpeg_buffer(source, max_side=1536)
+        upload.name = f"reference-{index}.jpg"
+        uploads.append(upload)
     result = client.images.edit(
         model=model,
-        image=upload,
+        image=uploads[0] if len(uploads) == 1 else uploads,
         prompt=prompt,
         size="1024x1536",
         n=1,

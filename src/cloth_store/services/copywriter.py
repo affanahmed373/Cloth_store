@@ -1,4 +1,4 @@
-"""Ask a chat API for shop text about a dress photo."""
+"""Ask DeepSeek for one Instagram caption from the outfit photos."""
 
 from __future__ import annotations
 
@@ -6,12 +6,12 @@ from pathlib import Path
 
 from openai import OpenAI
 
-from cloth_store.services.library import instagram_stem, to_data_url
+from cloth_store.services.library import MAX_REFERENCE_PHOTOS, instagram_stem, to_data_url
 
 
 def generate_marketing_text(
     client: OpenAI,
-    source: Path,
+    sources: list[Path],
     prompt: str,
     *,
     model: str,
@@ -20,20 +20,21 @@ def generate_marketing_text(
 ) -> tuple[str, Path]:
     if not prompt.strip():
         raise ValueError("The saved prompt is empty.")
+    if not sources:
+        raise ValueError("Select at least one photo.")
+    if len(sources) > MAX_REFERENCE_PHOTOS:
+        raise ValueError(f"Select at most {MAX_REFERENCE_PHOTOS} photos.")
+    content: list[dict[str, object]] = [{"type": "text", "text": prompt}]
+    for source in sources:
+        content.append(
+            {
+                "type": "image_url",
+                "image_url": {"url": to_data_url(source), "detail": "low"},
+            }
+        )
     response = client.chat.completions.create(
         model=model,
-        messages=[
-            {
-                "role": "user",
-                "content": [
-                    {"type": "text", "text": prompt},
-                    {
-                        "type": "image_url",
-                        "image_url": {"url": to_data_url(source), "detail": "low"},
-                    },
-                ],
-            }
-        ],
+        messages=[{"role": "user", "content": content}],
     )
     text = (response.choices[0].message.content or "").strip()
     if not text:

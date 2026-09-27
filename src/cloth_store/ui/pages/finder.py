@@ -16,7 +16,7 @@ from cloth_store.models import GeneratedPhoto, MarketingText
 from cloth_store.services.client import make_client
 from cloth_store.services.copywriter import generate_marketing_text
 from cloth_store.services.generator import generate_mannequin_image
-from cloth_store.services.library import list_images
+from cloth_store.services.library import MAX_REFERENCE_PHOTOS, list_images
 from cloth_store.services.prompts import DEFAULT_IMAGE_PROMPT, DEFAULT_TEXT_PROMPT, compose_prompt
 from cloth_store.ui.components.gallery import render_gallery
 from cloth_store.ui.components.prompts import render_saved_prompt
@@ -29,7 +29,10 @@ def render_page() -> None:
     st.set_page_config(page_title="Dress catalog", page_icon="🧵", layout="wide")
     apply_styles()
     st.title("Dress catalog")
-    st.caption("Pick one dress photo and a suit code. Generate one 4:5 Instagram image, or the shop caption.")
+    st.caption(
+        f"Select up to {MAX_REFERENCE_PHOTOS} photos of one outfit and a suit code. "
+        "Generate image makes one 4:5 Instagram photo. Generate text writes the caption."
+    )
 
     settings = render_sidebar()
     folder = resolve_folder(settings.folder_text)
@@ -100,15 +103,27 @@ def _client(api_key: str, base_url: str, missing_message: str):
         return None
 
 
+def _ready(sources: list[Path], suit_code: str) -> bool:
+    if not sources:
+        st.error("Select at least one photo.")
+        return False
+    if len(sources) > MAX_REFERENCE_PHOTOS:
+        st.error(f"Select at most {MAX_REFERENCE_PHOTOS} photos.")
+        return False
+    if not suit_code.strip():
+        st.error("Enter a suit code.")
+        return False
+    return True
+
+
 def _generate_photo(
-    source: Path,
+    sources: list[Path],
     settings: SidebarInput,
     general: str,
     extra: str,
     suit_code: str,
 ) -> None:
-    if not suit_code.strip():
-        st.error("Enter a suit code.")
+    if not _ready(sources, suit_code):
         return
     client = _client(
         settings.api_key,
@@ -126,35 +141,35 @@ def _generate_photo(
         st.error(str(error))
         return
 
-    with st.spinner(f"Sending {source.name}..."):
+    names = ", ".join(path.name for path in sources)
+    with st.spinner(f"Sending {len(sources)} photo{'s' if len(sources) != 1 else ''}..."):
         try:
             image_path, prompt_path = generate_mannequin_image(
                 client,
-                source,
+                sources,
                 prompt,
                 model=settings.image_model,
                 output_dir=OUTPUT_DIR,
                 suit_code=suit_code,
             )
             photo = GeneratedPhoto(
-                source_name=source.name,
+                source_name=names,
                 image_path=str(image_path),
                 prompt_path=str(prompt_path),
             )
         except Exception as error:
-            photo = GeneratedPhoto(source_name=source.name, error=str(error))
+            photo = GeneratedPhoto(source_name=names, error=str(error))
     st.session_state["photos"] = [photo]
 
 
 def _generate_text(
-    source: Path,
+    sources: list[Path],
     settings: SidebarInput,
     general: str,
     extra: str,
     suit_code: str,
 ) -> None:
-    if not suit_code.strip():
-        st.error("Enter a suit code.")
+    if not _ready(sources, suit_code):
         return
     client = _client(
         settings.text_api_key,
@@ -172,17 +187,18 @@ def _generate_text(
         st.error(str(error))
         return
 
-    with st.spinner(f"Writing text for {source.name}..."):
+    names = ", ".join(path.name for path in sources)
+    with st.spinner("Writing the Instagram caption..."):
         try:
             text, text_path = generate_marketing_text(
                 client,
-                source,
+                sources,
                 prompt,
                 model=settings.text_model,
                 output_dir=OUTPUT_DIR,
                 suit_code=suit_code,
             )
-            item = MarketingText(source_name=source.name, text=text, text_path=str(text_path))
+            item = MarketingText(source_name=names, text=text, text_path=str(text_path))
         except Exception as error:
-            item = MarketingText(source_name=source.name, error=str(error))
+            item = MarketingText(source_name=names, error=str(error))
     st.session_state["texts"] = [item]

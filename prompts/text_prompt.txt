@@ -1,5 +1,7 @@
-Write one Instagram caption for the Pakistani outfit in the photo.
-Follow this layout. Change the description so it matches the photo, and use the suit code from the line that starts with "Suit code:".
+Write one Instagram caption for the Pakistani outfit in the photos.
+The photos are different views of the same outfit. Use all of them, and write a single caption, not one caption per photo.
+This caption is for Instagram. It can also be reused on the related Facebook post.
+Follow this layout. Change the description so it matches the photos, and use the suit code from the line that starts with "Suit code:".
 Put that same code after "Code:" in the first line and again in "mention Code". Do not invent a different code.
 Keep the shop name, the address, the emojis, and the closing line.
 

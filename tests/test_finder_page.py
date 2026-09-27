@@ -28,7 +28,7 @@ def test_page_lists_photos_and_both_actions(monkeypatch) -> None:
     labels = [button.label for button in app.button]
 
     assert app.title[0].value == "Dress catalog"
-    assert any(field.label == "Dress photo" for field in app.selectbox)
+    assert app.checkbox
     assert any(field.label == "Suit code" for field in app.text_input)
     assert "Generate image" in labels
     assert "Generate text" in labels
@@ -39,6 +39,7 @@ def test_page_lists_photos_and_both_actions(monkeypatch) -> None:
 def test_generate_image_without_a_key_asks_for_one(monkeypatch) -> None:
     _clear_keys(monkeypatch)
     app = _app()
+    app.checkbox[0].check()
     next(field for field in app.text_input if field.label == "Suit code").set_value("1005")
     next(button for button in app.button if button.label == "Generate image").click()
     app.run()

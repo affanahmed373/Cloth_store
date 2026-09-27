@@ -4,9 +4,10 @@ from __future__ import annotations
 
 from pathlib import Path
 
-DEFAULT_IMAGE_PROMPT = """Use the uploaded photo as the garment reference for an online clothing shop.
+DEFAULT_IMAGE_PROMPT = """The uploaded photos are different views of the same outfit. Use every photo as the garment reference for an online clothing shop.
 Keep the same Pakistani dress: colors, print, embroidery, fabric, and cut.
-Show that full outfit front view, standing straight, as a catalog product photo.
+Show that full outfit front view, standing straight, as one catalog product photo.
+Do not make a collage or a grid. Show one person or mannequin, in one frame.
 Use either a fashion mannequin or a generated catalog model wearing the outfit. A model is allowed. Do not force a mannequin.
 Plain light studio background, soft even lighting.
 No text, no watermark, no logo, no price. Do not copy a real person's face.
@@ -17,8 +18,10 @@ A three-piece outfit is a kameez or shirt, a bottom, and a dupatta. Show all thr
 A two-piece outfit has only two garments: the kameez or shirt, plus either a dupatta or a bottom (shalwar or trouser), whichever pair is actually in the photo.
 Frame the shot as one vertical 4:5 Instagram portrait. Keep the full outfit inside the frame, with a little space above the head and below the feet."""
 
-DEFAULT_TEXT_PROMPT = """Write one Instagram caption for the Pakistani outfit in the photo.
-Follow this layout. Change the description so it matches the photo, and use the suit code from the line that starts with "Suit code:".
+DEFAULT_TEXT_PROMPT = """Write one Instagram caption for the Pakistani outfit in the photos.
+The photos are different views of the same outfit. Use all of them, and write a single caption, not one caption per photo.
+This caption is for Instagram. It can also be reused on the related Facebook post.
+Follow this layout. Change the description so it matches the photos, and use the suit code from the line that starts with "Suit code:".
 Put that same code after "Code:" in the first line and again in "mention Code". Do not invent a different code.
 Keep the shop name, the address, the emojis, and the closing line.
 

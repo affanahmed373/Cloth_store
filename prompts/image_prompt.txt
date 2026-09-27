@@ -1,6 +1,7 @@
-Use the uploaded photo as the garment reference for an online clothing shop.
+The uploaded photos are different views of the same outfit. Use every photo as the garment reference for an online clothing shop.
 Keep the same Pakistani dress: colors, print, embroidery, fabric, and cut.
-Show that full outfit front view, standing straight, as a catalog product photo.
+Show that full outfit front view, standing straight, as one catalog product photo.
+Do not make a collage or a grid. Show one person or mannequin, in one frame.
 Use either a fashion mannequin or a generated catalog model wearing the outfit. A model is allowed. Do not force a mannequin.
 Plain light studio background, soft even lighting.
 No text, no watermark, no logo, no price. Do not copy a real person's face.

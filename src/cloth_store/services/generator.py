@@ -35,7 +35,7 @@ def generate_mannequin_image(
     model: str,
     output_dir: Path,
     suit_code: str,
-) -> tuple[Path, Path]:
+) -> Path:
     if not prompt.strip():
         raise ValueError("The saved prompt is empty.")
     if not sources:
@@ -53,6 +53,8 @@ def generate_mannequin_image(
         image=uploads[0] if len(uploads) == 1 else uploads,
         prompt=prompt,
         size="1024x1536",
+        quality="high",
+        input_fidelity="high",
         n=1,
     )
     images = result.data or []
@@ -61,7 +63,5 @@ def generate_mannequin_image(
 
     output_dir.mkdir(parents=True, exist_ok=True)
     image_path = output_dir / f"{stem}.png"
-    prompt_path = output_dir / f"{stem}.prompt.txt"
     image_path.write_bytes(to_instagram_png(image_bytes(images[0])))
-    prompt_path.write_text(prompt.strip() + "\n", encoding="utf-8")
-    return image_path, prompt_path
+    return image_path

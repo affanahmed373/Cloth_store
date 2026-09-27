@@ -91,7 +91,7 @@ def _prompt_editors(*, disabled: bool = False) -> tuple[str, str]:
             "Image prompt",
             IMAGE_PROMPT_PATH,
             DEFAULT_IMAGE_PROMPT,
-            "image_prompt",
+            "image_prompt_garment",
             disabled=disabled,
         )
     with text_column:
@@ -99,7 +99,7 @@ def _prompt_editors(*, disabled: bool = False) -> tuple[str, str]:
             "Text prompt",
             TEXT_PROMPT_PATH,
             DEFAULT_TEXT_PROMPT,
-            "text_prompt",
+            "text_prompt_garment",
             disabled=disabled,
         )
     return image_prompt, text_prompt
@@ -167,7 +167,7 @@ def _generate_photo(
     names = ", ".join(path.name for path in sources)
     with st.spinner(f"Sending {len(sources)} photo{'s' if len(sources) != 1 else ''}..."):
         try:
-            image_path, prompt_path = generate_mannequin_image(
+            image_path = generate_mannequin_image(
                 client,
                 sources,
                 prompt,
@@ -178,7 +178,6 @@ def _generate_photo(
             photo = GeneratedPhoto(
                 source_name=names,
                 image_path=str(image_path),
-                prompt_path=str(prompt_path),
             )
         except Exception as error:
             photo = GeneratedPhoto(source_name=names, error=str(error))

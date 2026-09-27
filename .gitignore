@@ -222,3 +222,4 @@ data/
 # Generated dress photos
 data/output/*
 !data/output/.gitkeep
+.DS_Store

@@ -18,7 +18,7 @@ def _png_b64(width: int = 90, height: int = 160) -> str:
 
 def test_sends_the_dress_and_saves_the_prompt(image_file: Path, tmp_path: Path) -> None:
     images = FakeImages(edit_b64=_png_b64())
-    image_path, prompt_path = generate_mannequin_image(
+    image_path = generate_mannequin_image(
         FakeImageClient(images),
         [image_file],
         "Show this dress on a mannequin.\n\nShop notes:\nEid launch",
@@ -30,7 +30,10 @@ def test_sends_the_dress_and_saves_the_prompt(image_file: Path, tmp_path: Path) 
     assert image_path.name == "instaimage-1005.png"
     with Image.open(image_path) as saved:
         assert saved.size == (1080, 1350)
-    assert "Eid launch" in prompt_path.read_text(encoding="utf-8")
+    assert "Eid launch" in images.edit_kwargs["prompt"]
+    assert images.edit_kwargs["quality"] == "high"
+    assert images.edit_kwargs["input_fidelity"] == "high"
+    assert not (tmp_path / "instaimage-1005.prompt.txt").exists()
     assert images.edit_kwargs["image"].name == "reference-1.jpg"
     assert images.edit_kwargs["size"] == "1024x1536"
     assert images.edit_kwargs["n"] == 1
@@ -80,7 +83,7 @@ def test_downloads_a_url_when_the_api_does_not_return_bytes(
             return False
 
     monkeypatch.setattr("cloth_store.services.generator.urllib.request.urlopen", lambda url, timeout=0: Response())
-    image_path, _prompt_path = generate_mannequin_image(
+    image_path = generate_mannequin_image(
         FakeImageClient(images),
         [image_file],
         "Show the dress.",
@@ -100,7 +103,7 @@ def test_sends_ten_reference_photos_and_asks_for_one_result(tmp_path: Path) -> N
         Image.new("RGB", (40, 60), (index * 40, 20, 30)).save(path)
         sources.append(path)
     images = FakeImages(edit_b64=_png_b64())
-    image_path, _prompt_path = generate_mannequin_image(
+    image_path = generate_mannequin_image(
         FakeImageClient(images),
         sources,
         "Show the dress.",

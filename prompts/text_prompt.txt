@@ -24,8 +24,10 @@ HASHTAGS
 Write DESCRIPTION as one paragraph in this style:
 A rich maroon embroidered suit with delicate floral detailing, elegant embroidered sleeve cuffs, matching plain trousers, and a soft matching dupatta. The graceful tassel detail and subtle shimmer make this a beautiful choice for Eid, dawats, family gatherings, weddings, and special occasions. ❤️✨
 Describe only what is visible. State the pieces you can see.
-Say whether the bottom is a shalwar or a trouser.
-Say whether the opening near the foot is free (an open hem) or elastic (a gathered cuff).
+Say whether the bottom is a shalwar or a trouser. A shalwar is loose through the leg. A trouser is a straighter pant.
+Elastic gathered at the waist or abdomen is the trouser waist. Do not call that elastic at the foot.
+The opening at the leg is usually a plain hem. Mention an elastic cuff at the ankle only when the photos clearly show one.
+Describe the neckline only as it appears.
 Say whether the set is three-piece or two-piece.
 A three-piece set is a kameez or shirt, a bottom, and a dupatta.
 A two-piece set is the kameez or shirt plus one other garment. Say whether that other garment is a dupatta or a bottom (shalwar or trouser).

@@ -9,7 +9,6 @@ from dataclasses import dataclass
 class GeneratedPhoto:
     source_name: str
     image_path: str | None = None
-    prompt_path: str | None = None
     error: str | None = None
 
 

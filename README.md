@@ -30,6 +30,30 @@ OPENAI_IMAGE_MODEL=gpt-image-1-mini
 streamlit run app.py
 ```
 
-`images/` includes a green placeholder, `sample_fabric.png`. Replace it with JPG, PNG, or WEBP outfit or fabric photos, or type another folder path in the sidebar. Select the photos, then choose **Find Pakistani dresses**.
+`data/images/` includes a green placeholder, `sample_fabric.png`. Replace it with JPG, PNG, or WEBP outfit or fabric photos, or type another folder path in the sidebar. Select the photos, then choose **Find Pakistani dresses**.
 
-The vision call reads color, pattern, and mood. The image call uses those photos as reference and saves new dress photos under `output/`. Uncheck **Also create dress photos** if you only want the written suggestions.
+The vision call reads color, pattern, and mood. The image call uses those photos as reference and saves new dress photos under `data/output/`. Uncheck **Also create dress photos** if you only want the written suggestions.
+
+## Tests
+
+```bash
+pip install -r requirements-dev.txt
+pytest
+```
+
+## Layout
+
+```text
+app.py                         Streamlit entry point
+src/cloth_store/
+  config.py                    paths and API settings
+  models.py                    dress results
+  services/                    photo folder, stylist, image creation
+  ui/
+    styles.css
+    components/                sidebar, gallery, result cards
+    pages/                     screens
+data/images/                   photos you send
+data/output/                   created dress photos
+tests/                         pytest, no live API key required
+```

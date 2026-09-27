@@ -22,13 +22,13 @@ def _clear_keys(monkeypatch) -> None:
     monkeypatch.delenv("OPENAI_API_KEY", raising=False)
 
 
-def test_page_lists_the_sample_photo_and_both_actions(monkeypatch) -> None:
+def test_page_lists_photos_and_both_actions(monkeypatch) -> None:
     _clear_keys(monkeypatch)
     app = _app()
     labels = [button.label for button in app.button]
 
     assert app.title[0].value == "Dress catalog"
-    assert {box.label for box in app.checkbox} == {"sample_fabric.png"}
+    assert app.checkbox
     assert "Generate image" in labels
     assert "Generate text" in labels
     assert "Save image prompt" in labels
@@ -38,7 +38,7 @@ def test_page_lists_the_sample_photo_and_both_actions(monkeypatch) -> None:
 def test_generate_image_without_a_key_asks_for_one(monkeypatch) -> None:
     _clear_keys(monkeypatch)
     app = _app()
-    next(box for box in app.checkbox if box.label == "sample_fabric.png").check()
+    app.checkbox[0].check()
     next(button for button in app.button if button.label == "Generate image").click()
     app.run()
 

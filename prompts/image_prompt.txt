@@ -1,5 +1,11 @@
 Use the uploaded photo as the garment reference for an online clothing shop.
 Keep the same Pakistani dress: colors, print, embroidery, fabric, and cut.
-Show that full outfit on a headless fashion mannequin (dress dummy), front view, standing straight.
-Plain light studio background, soft even lighting, catalog product photo.
-No person, no face, no hands, no text, no watermark, no logo, no price.
+Show that full outfit front view, standing straight, as a catalog product photo.
+Use either a fashion mannequin or a generated catalog model wearing the outfit. A model is allowed. Do not force a mannequin.
+Plain light studio background, soft even lighting.
+No text, no watermark, no logo, no price. Do not copy a real person's face.
+Match the pieces in the photo. Do not add or remove a garment.
+If the bottom is a shalwar, keep a shalwar. If it is a trouser, keep a trouser.
+Keep the opening near the foot as it is: a free open hem, or an elastic gathered cuff. Do not change one into the other.
+A three-piece outfit is a kameez or shirt, a bottom, and a dupatta. Show all three only when all three are in the photo.
+A two-piece outfit has only two garments: the kameez or shirt, plus either a dupatta or a bottom (shalwar or trouser), whichever pair is actually in the photo.

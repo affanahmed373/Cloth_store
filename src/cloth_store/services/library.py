@@ -10,7 +10,6 @@ from pathlib import Path
 from PIL import Image
 
 IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp", ".gif"}
-MAX_REFERENCE_IMAGES = 4
 
 
 def list_images(folder: Path) -> list[Path]:

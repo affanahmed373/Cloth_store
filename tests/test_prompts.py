@@ -2,18 +2,26 @@ from pathlib import Path
 
 import pytest
 
-from cloth_store.config import IMAGE_PROMPT_PATH
+from cloth_store.config import IMAGE_PROMPT_PATH, TEXT_PROMPT_PATH
 from cloth_store.services.prompts import (
     DEFAULT_IMAGE_PROMPT,
+    DEFAULT_TEXT_PROMPT,
     compose_prompt,
     load_prompt,
     save_prompt,
 )
 
 
-def test_checked_in_image_prompt_is_the_mannequin_brief() -> None:
-    assert "mannequin" in load_prompt(IMAGE_PROMPT_PATH, DEFAULT_IMAGE_PROMPT)
-    assert load_prompt(IMAGE_PROMPT_PATH, DEFAULT_IMAGE_PROMPT) == DEFAULT_IMAGE_PROMPT
+def test_checked_in_prompts_keep_the_piece_rules() -> None:
+    image_prompt = load_prompt(IMAGE_PROMPT_PATH, DEFAULT_IMAGE_PROMPT)
+    text_prompt = load_prompt(TEXT_PROMPT_PATH, DEFAULT_TEXT_PROMPT)
+    assert image_prompt == DEFAULT_IMAGE_PROMPT
+    assert text_prompt == DEFAULT_TEXT_PROMPT
+    for prompt in (image_prompt, text_prompt):
+        assert "shalwar" in prompt
+        assert "elastic" in prompt
+        assert "two-piece" in prompt
+        assert "dupatta" in prompt
 
 
 def test_compose_prompt_appends_shop_notes() -> None:

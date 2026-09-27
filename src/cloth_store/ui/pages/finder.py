@@ -16,7 +16,7 @@ from cloth_store.models import GeneratedPhoto, MarketingText
 from cloth_store.services.client import make_client
 from cloth_store.services.copywriter import generate_marketing_text
 from cloth_store.services.generator import generate_mannequin_image
-from cloth_store.services.library import MAX_REFERENCE_IMAGES, list_images
+from cloth_store.services.library import list_images
 from cloth_store.services.prompts import DEFAULT_IMAGE_PROMPT, DEFAULT_TEXT_PROMPT, compose_prompt
 from cloth_store.ui.components.gallery import render_gallery
 from cloth_store.ui.components.prompts import render_saved_prompt
@@ -29,7 +29,7 @@ def render_page() -> None:
     st.set_page_config(page_title="Dress catalog", page_icon="🧵", layout="wide")
     apply_styles()
     st.title("Dress catalog")
-    st.caption("Add a dress photo. One button makes a mannequin shot. The other writes the shop text.")
+    st.caption("Add a dress photo. One button makes a catalog shot. The other writes the shop text.")
 
     settings = render_sidebar()
     folder = resolve_folder(settings.folder_text)
@@ -42,7 +42,7 @@ def render_page() -> None:
         st.info(f"No photos in {folder}. Add JPG, PNG, or WEBP files, then refresh this page.")
         st.stop()
 
-    selected = render_gallery(images)[:MAX_REFERENCE_IMAGES]
+    selected = render_gallery(images)
     image_prompt, text_prompt = _prompt_editors()
     extra = st.text_area(
         "Your notes",

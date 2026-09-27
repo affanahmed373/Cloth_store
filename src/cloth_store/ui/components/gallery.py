@@ -6,9 +6,6 @@ from pathlib import Path
 
 import streamlit as st
 
-from cloth_store.services.library import MAX_REFERENCE_IMAGES
-
-
 def render_gallery(images: list[Path]) -> list[Path]:
     st.write(f"**{len(images)}** photo{'s' if len(images) != 1 else ''} in `{images[0].parent}`")
 
@@ -25,6 +22,4 @@ def render_gallery(images: list[Path]) -> list[Path]:
             if st.checkbox(path.name, key=f"pick_{path}"):
                 selected.append(path)
 
-    if len(selected) > MAX_REFERENCE_IMAGES:
-        st.warning(f"Only the first {MAX_REFERENCE_IMAGES} selected photos are sent.")
     return selected

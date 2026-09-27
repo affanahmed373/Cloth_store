@@ -10,7 +10,7 @@ from cloth_store.models import GeneratedPhoto, MarketingText
 
 
 def render_photos(photos: list[GeneratedPhoto]) -> None:
-    st.subheader("Mannequin photos")
+    st.subheader("Catalog photos")
     for photo in photos:
         image, details = st.columns([1, 2])
         with image:

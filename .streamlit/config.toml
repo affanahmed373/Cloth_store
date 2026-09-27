@@ -1,0 +1,3 @@
+[runner]
+# Finish an image or text call before starting another rerun.
+fastReruns = false

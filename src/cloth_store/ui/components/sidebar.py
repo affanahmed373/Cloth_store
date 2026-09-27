@@ -29,27 +29,32 @@ class SidebarInput:
     text_model: str
 
 
-def render_sidebar() -> SidebarInput:
+def render_sidebar(*, disabled: bool = False) -> SidebarInput:
     with st.sidebar:
         st.header("Settings")
-        folder_text = st.text_input("Image folder", value=str(IMAGES_DIR))
+        folder_text = st.text_input("Image folder", value=str(IMAGES_DIR), disabled=disabled)
         st.subheader("Image")
-        base_url = st.text_input("Image API base URL", value=api_base_url())
+        base_url = st.text_input("Image API base URL", value=api_base_url(), disabled=disabled)
         typed_key = ""
         if env_api_key():
             st.caption("Image API key loaded from the environment.")
         else:
-            typed_key = st.text_input("Image API key", type="password", key="api_key_input")
-        image_name = st.text_input("Image model", value=image_model())
+            typed_key = st.text_input("Image API key", type="password", key="api_key_input", disabled=disabled)
+        image_name = st.text_input("Image model", value=image_model(), disabled=disabled)
 
         st.subheader("Text")
-        text_base_url = st.text_input("Text API base URL", value=text_api_base_url())
+        text_base_url = st.text_input("Text API base URL", value=text_api_base_url(), disabled=disabled)
         typed_text_key = ""
         if text_api_key():
             st.caption("DeepSeek API key loaded from the environment.")
         else:
-            typed_text_key = st.text_input("DeepSeek API key", type="password", key="text_api_key_input")
-        text_name = st.text_input("Text model", value=text_model())
+            typed_text_key = st.text_input(
+                "DeepSeek API key",
+                type="password",
+                key="text_api_key_input",
+                disabled=disabled,
+            )
+        text_name = st.text_input("Text model", value=text_model(), disabled=disabled)
         st.caption("Images use the image server. Captions use DeepSeek unless you change the text server.")
     return SidebarInput(
         folder_text=folder_text,

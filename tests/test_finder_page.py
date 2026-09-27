@@ -30,10 +30,21 @@ def test_page_lists_photos_and_both_actions(monkeypatch) -> None:
     assert app.title[0].value == "Dress catalog"
     assert app.checkbox
     assert any(field.label == "Suit code" for field in app.text_input)
+    assert "Select all" in labels
     assert "Generate image" in labels
     assert "Generate text" in labels
     assert "Save image prompt" in labels
     assert "Save text prompt" in labels
+
+
+def test_select_all_checks_every_photo(monkeypatch) -> None:
+    _clear_keys(monkeypatch)
+    app = _app()
+    next(button for button in app.button if button.label == "Select all").click()
+    app.run()
+
+    assert app.checkbox
+    assert all(box.value for box in app.checkbox)
 
 
 def test_generate_image_without_a_key_asks_for_one(monkeypatch) -> None:

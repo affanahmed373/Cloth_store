@@ -54,7 +54,6 @@ def generate_mannequin_image(
         prompt=prompt,
         size="1024x1536",
         quality="high",
-        input_fidelity="high",
         n=1,
     )
     images = result.data or []

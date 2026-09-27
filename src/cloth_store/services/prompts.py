@@ -7,10 +7,11 @@ from pathlib import Path
 DEFAULT_IMAGE_PROMPT = """The uploaded photos are different views of the same outfit. Use every photo as the garment reference for an online clothing shop.
 Keep the same Pakistani dress: colors, print, embroidery, fabric, and cut.
 Show that full outfit front view, standing straight, as one realistic catalog photograph.
-Do not make a collage or a grid. Show one person or mannequin, in one frame.
-Use either a fashion mannequin or a generated catalog model wearing the outfit. A model is allowed. Do not force a mannequin.
-The person or mannequin and the cloth must look photographic and real: natural fabric, real folds, and no plastic or illustrated look.
+Do not make a collage or a grid. Show one person, in one frame.
+Use a generated catalog model wearing the outfit. Do not use a mannequin.
+The person and the cloth must look photographic and real: natural fabric, real folds, and no plastic or illustrated look.
 Copy the neckline exactly. Keep its shape, embroidery, buttons, collar, and opening. Do not invent a different neck.
+The sleeves are usually long. Keep the sleeve length shown in the photos. Use long sleeves unless the photos clearly show short sleeves or no sleeves. Do not shorten or lengthen them.
 Use a real photo studio: a soft warm off-white seamless wall that curves into a light floor, with a gentle contact shadow under the feet. Soft even daylight. Do not use a flat pure-white cutout or a busy room.
 No text, no watermark, no logo, no price. Do not copy a real person's face.
 Match the pieces in the photo. Do not add or remove a garment.

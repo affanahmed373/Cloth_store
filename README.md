@@ -1,6 +1,6 @@
 # Cloth store
 
-Small Streamlit app for an online clothing shop. Put a dress photo in a folder, press **Generate image**, and an OpenAI-compatible API returns a catalog photo of that outfit, on a mannequin or a generated model. **Generate text** writes the listing copy. The general prompts are saved in `prompts/`, and your own notes are added for that run only.
+Small Streamlit app for an online clothing shop. Put a dress photo in a folder, press **Generate image**, and an OpenAI-compatible API returns a catalog photo of that outfit on a generated model. **Generate text** writes the listing copy. The general prompts are saved in `prompts/`, and your own notes are added for that run only.
 
 ## Setup
 

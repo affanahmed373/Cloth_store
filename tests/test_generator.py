@@ -32,7 +32,7 @@ def test_sends_the_dress_and_saves_the_prompt(image_file: Path, tmp_path: Path) 
         assert saved.size == (1080, 1350)
     assert "Eid launch" in images.edit_kwargs["prompt"]
     assert images.edit_kwargs["quality"] == "high"
-    assert images.edit_kwargs["input_fidelity"] == "high"
+    assert "input_fidelity" not in images.edit_kwargs
     assert not (tmp_path / "instaimage-1005.prompt.txt").exists()
     assert images.edit_kwargs["image"].name == "reference-1.jpg"
     assert images.edit_kwargs["size"] == "1024x1536"

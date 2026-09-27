@@ -60,16 +60,22 @@ def render_page() -> None:
     st.caption("Your notes are added to the saved prompt for this run only. The suit code is used in the caption and in the file name.")
     if busy:
         st.info("Creating the Instagram image. Please wait. This page stays locked until the photo is ready.")
+    needs_code = not suit_code.strip()
+    if needs_code:
+        st.caption("Enter a suit code before generating an image.")
     generate_image, generate_text = st.columns(2)
     with generate_image:
-        make_photo = st.button("Generate image", type="primary", disabled=busy)
+        make_photo = st.button("Generate image", type="primary", disabled=busy or needs_code)
     with generate_text:
         make_text = st.button("Generate text", disabled=busy)
 
-    if make_photo and _ready(selected, suit_code) and _image_ready(settings):
+    if make_photo and not needs_code and _ready(selected, suit_code) and _image_ready(settings):
         st.session_state["image_job"] = True
         st.rerun()
-    if busy:
+    if busy and needs_code:
+        st.session_state["image_job"] = False
+        st.error("Enter a suit code.")
+    elif busy:
         with st.spinner("Creating the Instagram image. Please wait."):
             _generate_photo(selected, settings, image_prompt, extra, suit_code)
         st.session_state["image_job"] = False
@@ -92,7 +98,7 @@ def _prompt_editors(*, disabled: bool = False) -> tuple[str, str]:
             "Image prompt",
             IMAGE_PROMPT_PATH,
             DEFAULT_IMAGE_PROMPT,
-            "image_prompt_studio",
+            "image_prompt_model",
             disabled=disabled,
         )
     with text_column:

@@ -17,6 +17,7 @@ def test_checked_in_prompts_keep_the_piece_rules() -> None:
     text_prompt = load_prompt(TEXT_PROMPT_PATH, DEFAULT_TEXT_PROMPT)
     assert image_prompt == DEFAULT_IMAGE_PROMPT
     assert text_prompt == DEFAULT_TEXT_PROMPT
+    assert "The actual item may differ slightly from the photo." in text_prompt
     for prompt in (image_prompt, text_prompt):
         assert "shalwar" in prompt
         assert "elastic" in prompt

@@ -4,31 +4,38 @@ from __future__ import annotations
 
 from pathlib import Path
 
-DEFAULT_IMAGE_PROMPT = """The uploaded photos are different views of the same outfit. Use every photo as the garment reference for an online clothing shop.
-Keep the same Pakistani dress: colors, print, embroidery, fabric, and cut.
-Show that full outfit front view, standing straight, as one realistic catalog photograph.
-Do not make a collage or a grid. Show one person, in one frame.
-Use a generated catalog model wearing the outfit. Do not use a mannequin.
-The person and the cloth must look photographic and real: natural fabric, real folds, and no plastic or illustrated look.
-Copy the neckline exactly. Keep its shape, embroidery, buttons, collar, and opening. Do not invent a different neck.
-The sleeves are usually long. Keep the sleeve length shown in the photos. Use long sleeves unless the photos clearly show short sleeves or no sleeves. Do not shorten or lengthen them.
-Use a real photo studio: a soft warm off-white seamless wall that curves into a light floor, with a gentle contact shadow under the feet. Soft even daylight. Do not use a flat pure-white cutout or a busy room.
-No text, no watermark, no logo, no price. Do not copy a real person's face.
-Match the pieces in the photo. Do not add or remove a garment.
-If the bottom is a shalwar, keep a shalwar. If it is a trouser, keep a trouser.
-A shalwar is loose through the leg. A trouser is a straighter pant. Do not turn one into the other.
-Elastic gathered at the waist or abdomen is the trouser waist. It does not mean the ankles are elastic.
-The opening at the leg is usually a plain hem, not an elastic cuff. Do not add elastic at the ankles unless the photos clearly show it there.
-A three-piece outfit is a kameez or shirt, a bottom, and a dupatta. Show all three only when all three are in the photo.
-A two-piece outfit has only two garments: the kameez or shirt, plus either a dupatta or a bottom (shalwar or trouser), whichever pair is actually in the photo.
-Frame the shot as one vertical 4:5 Instagram portrait. Keep the full outfit inside the frame, with a little space above the head and below the feet."""
+DEFAULT_IMAGE_PROMPT = """Use all uploaded images as garment references. They show different views of the same Pakistani outfit.
+
+Keep the same generated female catalog model from the current image. Preserve her exact face, hairstyle, skin tone, body proportions, age appearance, and overall identity. Do not replace the model, create a new face, use a mannequin, or copy the face of any person in the garment-reference images.
+
+Recreate the outfit exactly as shown in the uploaded garment-reference images. Preserve the exact colors, fabric, floral print, embroidery, stitching, neckline, collar, buttons, front opening, sleeve design, sleeve length, shirt length, borders, hem, bottom, and dupatta. Do not redesign, simplify, recolor, or reinterpret any part of the outfit.
+
+Copy the neckline exactly from the references. Keep its original shape, embroidery, collar, buttons, front slit or opening, and finishing. Do not invent a different neckline.
+
+Keep the same number of pieces shown in the reference images. A three-piece outfit must include the kameez or shirt, bottom, and dupatta. A two-piece outfit must include only the two pieces actually shown.
+
+Keep the bottom type exactly as shown. If it is a shalwar, keep it loose through the legs. If it is a trouser, keep it straight and tailored. Do not turn a shalwar into trousers or trousers into a shalwar. Do not add elastic ankle cuffs unless they are clearly visible in the reference. A gathered elastic waist does not mean the ankle is elastic.
+
+Keep the dupatta exactly as shown, including its color, print, transparency, border, embroidery, width, and fabric. Drape it naturally without hiding the neckline, sleeves, shirt embroidery, bottom shape, or important details of the garment.
+
+Create one realistic, premium Pakistani clothing e-commerce catalog photograph. Show one full outfit, on one female model, in one single frame. The model must stand naturally facing the camera, with a relaxed straight posture. Use a simple natural pose with both arms and both feet visible.
+
+Safe full-body framing is mandatory. Use a slightly wide camera distance, not a zoomed-in view. Center the model horizontally and vertically. Show the entire body from the top of her hair to the soles of both shoes. Leave generous empty background space above her head and visible floor beneath her shoes. Keep at least 8 to 10 percent of the image height as empty space above the head and at least 6 to 8 percent as visible floor below the shoes. Keep comfortable space on both sides of the model and dupatta. Nothing may touch or be cropped by the edges of the frame.
+
+The entire hairstyle, head, shoulders, hands, sleeves, shirt hem, trouser or shalwar hem, dupatta, ankles, shoes, and both feet must be fully visible. Ensure the trailing end and border of the dupatta remain inside the frame.
+
+Use one vertical 4:5 Instagram portrait composition. Use a realistic professional photo studio with a warm soft off-white seamless wall that curves naturally into a light floor. Add soft even daylight, natural shadows, and a gentle contact shadow beneath both feet. Use high-end fashion catalog photography with a sharp, realistic camera look.
+
+The model and fabric must look truly photographic and realistic. Show natural cloth drape, realistic folds, detailed stitching, accurate embroidery, visible textile texture, correct garment proportions, realistic hands, and natural feet. Avoid plastic-looking fabric, overly smooth skin, illustration style, 3D render style, or artificial shine.
+
+No collage, no grid, no multiple models, no mannequin, no duplicate person, no changed face, no different outfit, no invented neckline, no missing garment piece, no extra garment piece, no wrong bottom type, no changed sleeve length, no extra pockets, no added ankle cuffs, no cropped head, no cut-off hair, no cropped hands, no cropped feet, no missing shoes, no feet touching the bottom edge, no head touching the top edge, no cropped dupatta, no clothing touching side borders, no close-up framing, no partial body shot, no flat pure-white cutout background, no busy room, no text, no watermark, no logo, no label, and no price."""
 
 DEFAULT_TEXT_PROMPT = """Write one Instagram caption for the Pakistani outfit in the photos.
 The photos are different views of the same outfit. Use all of them, and write a single caption, not one caption per photo.
 This caption is for Instagram. It can also be reused on the related Facebook post.
 Follow this layout. Change the description so it matches the photos, and use the suit code from the line that starts with "Suit code:".
 Put that same code after "Code:" in the first line and again in "mention Code". Do not invent a different code.
-Keep the shop name, the address, the emojis, and the closing line.
+Keep the shop name, the address, the emojis, the closing line, and the disclaimer.
 
 ✨ **New Arrival | Code: CODE** ✨
 
@@ -44,6 +51,8 @@ To order or ask about price, size, and availability:
 
 Apna style, Pardesi style ✨
 
+⚠️ The actual item may differ slightly from the photo.
+
 HASHTAGS
 
 Write DESCRIPTION as one paragraph in this style:
@@ -58,6 +67,7 @@ A three-piece set is a kameez or shirt, a bottom, and a dupatta.
 A two-piece set is the kameez or shirt plus one other garment. Say whether that other garment is a dupatta or a bottom (shalwar or trouser).
 Do not call it three-piece when a dupatta or a bottom is missing, and do not mention a piece that is not in the photo.
 Do not invent a price.
+Keep the disclaimer exactly as written: "The actual item may differ slightly from the photo." Do not drop it, rewrite it, or move it.
 For HASHTAGS, keep #PardesiStyle #PakistaniFashionGermany #IndianFashionGermany #DuisburgFashion #DesiFashionGermany #PakistaniSuits #EidOutfit #WeddingWear #Duisburg #NRWFashion #PakistaniFashion #IndianEthnicWear and add a few that match the color and the outfit."""
 
 

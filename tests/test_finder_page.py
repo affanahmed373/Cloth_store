@@ -31,6 +31,7 @@ def test_page_lists_photos_and_both_actions(monkeypatch) -> None:
     assert app.checkbox
     assert any(field.label == "Suit code" for field in app.text_input)
     assert "Select all" in labels
+    assert "Choose folder" in labels
     assert "Generate image" in labels
     assert "Generate text" in labels
     assert "Save image prompt" in labels

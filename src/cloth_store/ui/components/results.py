@@ -32,6 +32,7 @@ def _render_image(photo: GeneratedPhoto | None) -> None:
     if photo and photo.image_path and Path(photo.image_path).is_file():
         st.image(photo.image_path, width="stretch")
         st.caption("1080×1350, 4:5, ready for Instagram.")
+        st.caption(f"Image saved to {photo.image_path}")
     elif photo is None or not photo.error:
         st.info("Image not created yet.")
     if photo and photo.error:

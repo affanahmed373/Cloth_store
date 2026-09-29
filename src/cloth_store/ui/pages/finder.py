@@ -103,7 +103,7 @@ def _prompt_editors(*, disabled: bool = False) -> tuple[str, str]:
             "Text prompt",
             TEXT_PROMPT_PATH,
             DEFAULT_TEXT_PROMPT,
-            "text_prompt_garment",
+            "text_prompt_disclaimer",
             disabled=disabled,
         )
     return image_prompt, text_prompt

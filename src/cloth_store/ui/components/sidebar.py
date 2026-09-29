@@ -6,9 +6,12 @@ from dataclasses import dataclass
 
 import streamlit as st
 
+from cloth_store.services.folder_picker import pick_folder
 from cloth_store.config import (
     IMAGES_DIR,
+    OUTPUT_DIR,
     api_base_url,
+    resolve_folder,
     env_api_key,
     image_model,
     read_api_key,
@@ -29,10 +32,26 @@ class SidebarInput:
     text_model: str
 
 
+def _choose_image_folder() -> None:
+    chosen = pick_folder(str(st.session_state.get("image_folder", IMAGES_DIR)))
+    if chosen:
+        st.session_state["image_folder"] = chosen
+
+
 def render_sidebar(*, disabled: bool = False) -> SidebarInput:
     with st.sidebar:
         st.header("Settings")
-        folder_text = st.text_input("Image folder", value=str(IMAGES_DIR), disabled=disabled)
+        if "image_folder" not in st.session_state:
+            st.session_state["image_folder"] = str(IMAGES_DIR)
+        folder_text = st.text_input("Image folder", key="image_folder", disabled=disabled)
+        st.button(
+            "Choose folder",
+            on_click=_choose_image_folder,
+            disabled=disabled,
+        )
+        folder = resolve_folder(folder_text)
+        st.caption(f"Photos are read from this folder on this computer: {folder}")
+        st.caption(f"The caption and the generated image stay in {OUTPUT_DIR}.")
         st.subheader("Image")
         base_url = st.text_input("Image API base URL", value=api_base_url(), disabled=disabled)
         typed_key = ""

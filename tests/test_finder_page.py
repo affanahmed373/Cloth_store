@@ -32,6 +32,11 @@ def test_page_lists_photos_and_both_actions(monkeypatch) -> None:
     assert any(field.label == "Suit code" for field in app.text_input)
     assert "Select all" in labels
     assert "Choose folder" in labels
+    image_models = next(field for field in app.selectbox if field.label == "Image model")
+    assert "gpt-image-1-mini" in image_models.options
+    assert "gpt-image-1" in image_models.options
+    assert "gpt-image-1.5" in image_models.options
+    assert "gpt-image-2" in image_models.options
     assert "Generate image" in labels
     assert "Generate text" in labels
     assert "Save image prompt" in labels
@@ -44,8 +49,21 @@ def test_select_all_checks_every_photo(monkeypatch) -> None:
     next(button for button in app.button if button.label == "Select all").click()
     app.run()
 
-    assert app.checkbox
-    assert all(box.value for box in app.checkbox)
+    photo_boxes = [box for box in app.checkbox if box.label.endswith((".JPG", ".jpg", ".PNG", ".png", ".webp", ".WEBP"))]
+    assert photo_boxes
+    assert all(box.value for box in photo_boxes)
+
+
+def test_outfit_details_default_to_not_set(monkeypatch) -> None:
+    _clear_keys(monkeypatch)
+    app = _app()
+    labels = {field.label: field for field in app.radio}
+    assert labels["How many pieces"].value == "Not set"
+    assert labels["How many pieces"].options == ["Not set", "2 pieces", "3 pieces"]
+    assert labels["Dupatta"].value == "Not set"
+    assert labels["Bottom"].value == "Not set"
+    assert labels["Dupatta"].options == ["Not set", "Yes", "No"]
+    assert labels["Bottom"].options == ["Not set", "Shalwar", "Trouser"]
 
 
 def _image_button(app: AppTest):

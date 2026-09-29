@@ -1,6 +1,6 @@
 # Cloth store
 
-Small Streamlit app for an online clothing shop. Put a dress photo in a folder, press **Generate image**, and an OpenAI-compatible API returns a catalog photo of that outfit on a generated model. **Generate text** writes the listing copy. The general prompts are saved in `prompts/`, and your own notes are added for that run only.
+Small Streamlit app for an online clothing shop. Put a dress photo in a folder, press **Generate image**, and an OpenAI-compatible API returns a catalog photo of that outfit on a fashion mannequin. **Generate text** writes the listing copy. The general prompts are saved in `prompts/`, and your own notes are added for that run only.
 
 ## Setup
 
@@ -17,6 +17,11 @@ Put the API keys in `.env`. The image call stays on an OpenAI-compatible server.
 API_KEY=sk-...
 API_BASE_URL=https://api.openai.com/v1
 IMAGE_MODEL=gpt-image-1-mini
+```
+
+In the sidebar, pick another OpenAI image model when needed: `gpt-image-1`, `gpt-image-1.5`, `gpt-image-2`, or `chatgpt-image-latest`. The stronger models follow the suit photos more closely and cost more. Captions still use DeepSeek:
+
+```bash
 TEXT_API_KEY=sk-...
 TEXT_API_BASE_URL=https://api.deepseek.com
 TEXT_MODEL=deepseek-flash

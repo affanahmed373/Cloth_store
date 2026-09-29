@@ -44,6 +44,7 @@ def slug(value: str) -> str:
 
 
 INSTAGRAM_SIZE = (1080, 1350)
+INSTAGRAM_PAD_COLOR = (245, 240, 232)
 MAX_REFERENCE_PHOTOS = 10
 
 
@@ -55,7 +56,7 @@ def instagram_stem(suit_code: str) -> str:
 
 
 def to_instagram_png(raw: bytes) -> bytes:
-    """Center-crop to 4:5 and resize to the Instagram portrait size."""
+    """Fit the full photo inside 4:5 without cropping the model."""
     try:
         with Image.open(BytesIO(raw)) as image:
             frame = image.convert("RGB")
@@ -66,17 +67,16 @@ def to_instagram_png(raw: bytes) -> bytes:
     if width < 1 or height < 1:
         raise RuntimeError("The image API did not return a photo that could be sized for Instagram.")
 
-    target_ratio = 4 / 5
-    if width / height > target_ratio:
-        new_width = int(height * target_ratio)
-        left = (width - new_width) // 2
-        frame = frame.crop((left, 0, left + new_width, height))
-    else:
-        new_height = int(width / target_ratio)
-        top = (height - new_height) // 2
-        frame = frame.crop((0, top, width, top + new_height))
+    target_width, target_height = INSTAGRAM_SIZE
+    scale = min(target_width / width, target_height / height)
+    new_width = max(1, int(round(width * scale)))
+    new_height = max(1, int(round(height * scale)))
+    fitted = frame.resize((new_width, new_height), Image.Resampling.LANCZOS)
+    canvas = Image.new("RGB", INSTAGRAM_SIZE, INSTAGRAM_PAD_COLOR)
+    left = (target_width - new_width) // 2
+    top = (target_height - new_height) // 2
+    canvas.paste(fitted, (left, top))
 
-    frame = frame.resize(INSTAGRAM_SIZE, Image.Resampling.LANCZOS)
     buffer = BytesIO()
-    frame.save(buffer, format="PNG")
+    canvas.save(buffer, format="PNG")
     return buffer.getvalue()

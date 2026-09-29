@@ -21,6 +21,22 @@ DEFAULT_API_BASE_URL = "https://api.openai.com/v1"
 DEFAULT_TEXT_API_BASE_URL = "https://api.deepseek.com"
 DEFAULT_TEXT_MODEL = "deepseek-flash"
 DEFAULT_IMAGE_MODEL = "gpt-image-1-mini"
+IMAGE_MODELS = (
+    "gpt-image-1-mini",
+    "gpt-image-1",
+    "gpt-image-1.5",
+    "gpt-image-2",
+    "chatgpt-image-latest",
+)
+# Mini rejects this parameter. The stronger edit models accept it and keep the garment closer.
+IMAGE_MODELS_WITH_INPUT_FIDELITY = frozenset(
+    {
+        "gpt-image-1",
+        "gpt-image-1.5",
+        "gpt-image-2",
+        "chatgpt-image-latest",
+    }
+)
 
 
 def api_base_url() -> str:
@@ -41,6 +57,19 @@ def text_api_key() -> str:
 
 def image_model() -> str:
     return os.getenv("IMAGE_MODEL") or os.getenv("OPENAI_IMAGE_MODEL") or DEFAULT_IMAGE_MODEL
+
+
+def image_model_choices(current: str | None = None) -> list[str]:
+    """Known OpenAI edit models, plus any custom value from the environment."""
+    chosen = (current or image_model()).strip() or DEFAULT_IMAGE_MODEL
+    options = list(IMAGE_MODELS)
+    if chosen not in options:
+        options.insert(0, chosen)
+    return options
+
+
+def supports_input_fidelity(model: str) -> bool:
+    return model.strip() in IMAGE_MODELS_WITH_INPUT_FIDELITY
 
 
 def env_api_key() -> str:

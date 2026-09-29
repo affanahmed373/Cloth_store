@@ -1,13 +1,16 @@
 from pathlib import Path
 
 from cloth_store.config import (
+    IMAGE_MODELS,
     IMAGE_PROMPT_PATH,
     IMAGES_DIR,
     OUTPUT_DIR,
     PROJECT_ROOT,
     TEXT_PROMPT_PATH,
+    image_model_choices,
     read_api_key,
     resolve_folder,
+    supports_input_fidelity,
     text_api_base_url,
     text_model,
 )
@@ -38,6 +41,23 @@ def test_text_defaults_to_deepseek(monkeypatch) -> None:
     monkeypatch.delenv("TEXT_API_BASE_URL", raising=False)
     assert text_model() == "deepseek-flash"
     assert text_api_base_url() == "https://api.deepseek.com"
+
+
+def test_image_model_choices_include_openai_edit_models(monkeypatch) -> None:
+    monkeypatch.delenv("IMAGE_MODEL", raising=False)
+    monkeypatch.delenv("OPENAI_IMAGE_MODEL", raising=False)
+    choices = image_model_choices()
+    assert choices == list(IMAGE_MODELS)
+    assert "gpt-image-1" in choices
+    assert "gpt-image-1.5" in choices
+    assert "gpt-image-2" in choices
+    assert supports_input_fidelity("gpt-image-1")
+    assert not supports_input_fidelity("gpt-image-1-mini")
+
+
+def test_image_model_choices_keep_a_custom_env_value(monkeypatch) -> None:
+    monkeypatch.setenv("IMAGE_MODEL", "my-custom-image")
+    assert image_model_choices()[0] == "my-custom-image"
 
 
 def test_resolve_folder_accepts_relative_and_absolute_paths(tmp_path: Path) -> None:

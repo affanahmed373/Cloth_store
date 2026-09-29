@@ -11,10 +11,11 @@ from cloth_store.config import (
     IMAGES_DIR,
     OUTPUT_DIR,
     api_base_url,
-    resolve_folder,
     env_api_key,
     image_model,
+    image_model_choices,
     read_api_key,
+    resolve_folder,
     text_api_base_url,
     text_api_key,
     text_model,
@@ -59,7 +60,17 @@ def render_sidebar(*, disabled: bool = False) -> SidebarInput:
             st.caption("Image API key loaded from the environment.")
         else:
             typed_key = st.text_input("Image API key", type="password", key="api_key_input", disabled=disabled)
-        image_name = st.text_input("Image model", value=image_model(), disabled=disabled)
+        choices = image_model_choices()
+        current = image_model()
+        image_name = st.selectbox(
+            "Image model",
+            choices,
+            index=choices.index(current) if current in choices else 0,
+            disabled=disabled,
+        )
+        st.caption(
+            "mini is cheapest. gpt-image-1 / 1.5 / 2 follow the suit photos more closely and cost more."
+        )
 
         st.subheader("Text")
         text_base_url = st.text_input("Text API base URL", value=text_api_base_url(), disabled=disabled)

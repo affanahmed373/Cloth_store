@@ -20,7 +20,16 @@ from cloth_store.services.client import make_client
 from cloth_store.services.copywriter import generate_marketing_text
 from cloth_store.services.generator import generate_mannequin_image
 from cloth_store.services.library import MAX_REFERENCE_PHOTOS, list_images
-from cloth_store.services.prompts import DEFAULT_IMAGE_PROMPT, DEFAULT_TEXT_PROMPT, compose_prompt
+from cloth_store.services.prompts import (
+    BOTTOM_OPTIONS,
+    DEFAULT_IMAGE_PROMPT,
+    DEFAULT_TEXT_PROMPT,
+    DUPATTA_OPTIONS,
+    NOT_SET,
+    PIECE_OPTIONS,
+    OutfitDetails,
+    compose_prompt,
+)
 from cloth_store.ui.components.gallery import render_gallery
 from cloth_store.ui.components.prompts import render_saved_prompt
 from cloth_store.ui.components.results import render_post
@@ -52,6 +61,7 @@ def render_page() -> None:
     selected = render_gallery(images, disabled=busy)
     image_prompt, text_prompt = _prompt_editors(disabled=busy)
     suit_code = st.text_input("Suit code", placeholder="1005", disabled=busy, key="suit_code")
+    outfit = _outfit_details(disabled=busy)
     extra = st.text_area(
         "Your notes",
         placeholder="Example: Eid launch, emerald and gold, lawn suit",
@@ -59,7 +69,11 @@ def render_page() -> None:
         disabled=busy,
         key="shop_notes",
     )
-    st.caption("Your notes are added to the saved prompt for this run only. The suit code is used in the caption and in the file name.")
+    st.caption(
+        "Your notes are added to the saved prompt for this run only. "
+        "The suit code is used in the caption and in the file name. "
+        "Outfit details stay Not set until you choose them; then they are added to the prompt."
+    )
     needs_code = not suit_code.strip()
     if needs_code:
         st.caption("Enter a suit code before generating an image.")
@@ -76,11 +90,11 @@ def render_page() -> None:
         st.session_state["image_job"] = False
         st.error("Enter a suit code.")
     elif busy:
-        _generate_photo(selected, settings, image_prompt, extra, suit_code)
+        _generate_photo(selected, settings, image_prompt, extra, suit_code, outfit)
         st.session_state["image_job"] = False
         st.rerun()
     if make_text:
-        _generate_text(selected, settings, text_prompt, extra, suit_code)
+        _generate_text(selected, settings, text_prompt, extra, suit_code, outfit)
 
     photos = st.session_state.get("photos") or []
     texts = st.session_state.get("texts") or []
@@ -95,7 +109,7 @@ def _prompt_editors(*, disabled: bool = False) -> tuple[str, str]:
             "Image prompt",
             IMAGE_PROMPT_PATH,
             DEFAULT_IMAGE_PROMPT,
-            "image_prompt_model",
+            "image_prompt_mannequin",
             disabled=disabled,
         )
     with text_column:
@@ -103,10 +117,33 @@ def _prompt_editors(*, disabled: bool = False) -> tuple[str, str]:
             "Text prompt",
             TEXT_PROMPT_PATH,
             DEFAULT_TEXT_PROMPT,
-            "text_prompt_disclaimer",
+            "text_prompt_piece_count",
             disabled=disabled,
         )
     return image_prompt, text_prompt
+
+
+def _outfit_details(*, disabled: bool = False) -> OutfitDetails:
+    st.subheader("Outfit details")
+    st.caption(
+        f"Leave a field on {NOT_SET} when you are unsure. "
+        "That sends information not available in the prompt, not a yes. "
+        "How many pieces can be 2 or 3 when you know it."
+    )
+    dupatta_col, pieces_col, bottom_col = st.columns(3)
+    with dupatta_col:
+        dupatta = st.radio("Dupatta", DUPATTA_OPTIONS, horizontal=True, disabled=disabled, key="outfit_dupatta")
+    with pieces_col:
+        pieces = st.radio(
+            "How many pieces",
+            PIECE_OPTIONS,
+            horizontal=True,
+            disabled=disabled,
+            key="outfit_pieces",
+        )
+    with bottom_col:
+        bottom = st.radio("Bottom", BOTTOM_OPTIONS, horizontal=True, disabled=disabled, key="outfit_bottom")
+    return OutfitDetails(dupatta=dupatta, pieces=pieces, bottom=bottom)
 
 
 def _image_ready(settings: SidebarInput) -> bool:
@@ -149,6 +186,7 @@ def _generate_photo(
     general: str,
     extra: str,
     suit_code: str,
+    outfit: OutfitDetails,
 ) -> None:
     if not _ready(sources, suit_code):
         return
@@ -163,7 +201,7 @@ def _generate_photo(
         st.error("Set an image model in the sidebar.")
         return
     try:
-        prompt = compose_prompt(general, extra)
+        prompt = compose_prompt(general, extra, outfit=outfit)
     except ValueError as error:
         st.error(str(error))
         return
@@ -202,6 +240,7 @@ def _generate_text(
     general: str,
     extra: str,
     suit_code: str,
+    outfit: OutfitDetails,
 ) -> None:
     if not _ready(sources, suit_code):
         return
@@ -216,7 +255,7 @@ def _generate_text(
         st.error("Set a text model in the sidebar.")
         return
     try:
-        prompt = compose_prompt(general, extra, suit_code)
+        prompt = compose_prompt(general, extra, suit_code, outfit=outfit)
     except ValueError as error:
         st.error(str(error))
         return

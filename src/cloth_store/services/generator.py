@@ -8,6 +8,7 @@ from pathlib import Path
 
 from openai import OpenAI
 
+from cloth_store.config import supports_input_fidelity
 from cloth_store.services.library import (
     MAX_REFERENCE_PHOTOS,
     instagram_stem,
@@ -48,14 +49,17 @@ def generate_mannequin_image(
         upload = to_jpeg_buffer(source, max_side=1536)
         upload.name = f"reference-{index}.jpg"
         uploads.append(upload)
-    result = client.images.edit(
-        model=model,
-        image=uploads[0] if len(uploads) == 1 else uploads,
-        prompt=prompt,
-        size="1024x1536",
-        quality="high",
-        n=1,
-    )
+    edit_kwargs: dict[str, object] = {
+        "model": model,
+        "image": uploads[0] if len(uploads) == 1 else uploads,
+        "prompt": prompt,
+        "size": "1024x1536",
+        "quality": "high",
+        "n": 1,
+    }
+    if supports_input_fidelity(model):
+        edit_kwargs["input_fidelity"] = "high"
+    result = client.images.edit(**edit_kwargs)
     images = result.data or []
     if not images:
         raise RuntimeError("The image API returned no photos.")

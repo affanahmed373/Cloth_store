@@ -41,6 +41,20 @@ def test_sends_the_dress_and_saves_the_prompt(image_file: Path, tmp_path: Path) 
     assert images.generate_kwargs is None
 
 
+def test_stronger_models_ask_for_high_input_fidelity(image_file: Path, tmp_path: Path) -> None:
+    images = FakeImages(edit_b64=_png_b64())
+    generate_mannequin_image(
+        FakeImageClient(images),
+        [image_file],
+        "Show this dress.",
+        model="gpt-image-1.5",
+        output_dir=tmp_path,
+        suit_code="1005",
+    )
+    assert images.edit_kwargs["input_fidelity"] == "high"
+    assert images.edit_kwargs["model"] == "gpt-image-1.5"
+
+
 def test_edit_errors_are_not_replaced_with_a_text_only_image(image_file: Path, tmp_path: Path) -> None:
     images = FakeImages(edit_error=RuntimeError("edit down"))
     with pytest.raises(RuntimeError, match="edit down"):

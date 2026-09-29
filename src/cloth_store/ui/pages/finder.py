@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import threading
 import time
-from collections.abc import Callable
 from pathlib import Path
 
 import streamlit as st
@@ -36,6 +35,11 @@ from cloth_store.ui.components.results import render_post
 from cloth_store.ui.components.sidebar import SidebarInput, render_sidebar
 from cloth_store.ui.styles import apply_styles
 
+CANCEL_NOTICE = (
+    "Stopped. Change the settings and try again. "
+    "The previous API call may still finish in the background, and you may still be charged for it."
+)
+
 
 def render_page() -> None:
     st.set_page_config(page_title="Dress catalog", page_icon="🧵", layout="wide")
@@ -46,7 +50,13 @@ def render_page() -> None:
         "Generate image makes one 4:5 Instagram photo. Generate text writes the caption."
     )
 
-    busy = bool(st.session_state.get("image_job"))
+    if st.session_state.pop("cancel_notice", None):
+        st.warning(CANCEL_NOTICE)
+
+    if _poll_active_job():
+        return
+
+    busy = _job_busy()
     settings = render_sidebar(disabled=busy)
     folder = resolve_folder(settings.folder_text)
     if not folder.is_dir():
@@ -84,22 +94,93 @@ def render_page() -> None:
         make_text = st.button("Generate text", disabled=busy)
 
     if make_photo and not needs_code and _ready(selected, suit_code) and _image_ready(settings):
-        st.session_state["image_job"] = True
+        if _start_photo_job(selected, settings, image_prompt, extra, suit_code, outfit):
+            st.rerun()
+    if make_text and _start_text_job(selected, settings, text_prompt, extra, suit_code, outfit):
         st.rerun()
-    if busy and needs_code:
-        st.session_state["image_job"] = False
-        st.error("Enter a suit code.")
-    elif busy:
-        _generate_photo(selected, settings, image_prompt, extra, suit_code, outfit)
-        st.session_state["image_job"] = False
-        st.rerun()
-    if make_text:
-        _generate_text(selected, settings, text_prompt, extra, suit_code, outfit)
 
     photos = st.session_state.get("photos") or []
     texts = st.session_state.get("texts") or []
     if photos or texts:
         render_post(photos[0] if photos else None, texts[0] if texts else None)
+
+
+def _job_busy() -> bool:
+    return st.session_state.get("active_job") is not None
+
+
+def cancel_active_job(session: dict) -> None:
+    """Free the page. Any in-flight API call is left running but its result is ignored."""
+    job = session.get("active_job")
+    if job is not None:
+        cancel = job.get("cancel")
+        if cancel is not None:
+            cancel.set()
+    session.pop("active_job", None)
+    session["image_job"] = False
+    session["cancel_notice"] = True
+
+
+def _poll_active_job() -> bool:
+    """Show progress and Cancel while a job runs. True means this run should stop here."""
+    job = st.session_state.get("active_job")
+    if job is None:
+        return False
+
+    st.info(f"{job['label']} {int(time.perf_counter() - job['started'])} s")
+    st.caption("Cancel frees the page so you can fix the settings and try again.")
+    st.warning(
+        "Careful: you may still be charged for the API call that already started, "
+        "even if you cancel here."
+    )
+    if st.button("Cancel and free the page", type="secondary"):
+        cancel_active_job(st.session_state)
+        st.rerun()
+
+    thread = job["thread"]
+    if thread.is_alive():
+        time.sleep(1)
+        st.rerun()
+
+    _finish_active_job(job)
+    st.session_state.pop("active_job", None)
+    st.session_state["image_job"] = False
+    st.rerun()
+    return True
+
+
+def _finish_active_job(job: dict) -> None:
+    if job.get("cancel") is not None and job["cancel"].is_set():
+        return
+    holder = job["holder"]
+    names = job["names"]
+    elapsed = time.perf_counter() - job["started"]
+    if job["kind"] == "image":
+        if "error" in holder:
+            photo = GeneratedPhoto(
+                source_name=names,
+                error=str(holder["error"]),
+                elapsed_seconds=elapsed,
+            )
+        else:
+            photo = GeneratedPhoto(
+                source_name=names,
+                image_path=str(holder.get("image_path")),
+                elapsed_seconds=elapsed,
+            )
+        st.session_state["photos"] = [photo]
+        return
+    if "error" in holder:
+        item = MarketingText(source_name=names, error=str(holder["error"]), elapsed_seconds=elapsed)
+    else:
+        text, text_path = holder["result"]
+        item = MarketingText(
+            source_name=names,
+            text=str(text),
+            text_path=str(text_path),
+            elapsed_seconds=elapsed,
+        )
+    st.session_state["texts"] = [item]
 
 
 def _prompt_editors(*, disabled: bool = False) -> tuple[str, str]:
@@ -180,36 +261,39 @@ def _ready(sources: list[Path], suit_code: str) -> bool:
     return True
 
 
-def _generate_photo(
+def _start_photo_job(
     sources: list[Path],
     settings: SidebarInput,
     general: str,
     extra: str,
     suit_code: str,
     outfit: OutfitDetails,
-) -> None:
+) -> bool:
     if not _ready(sources, suit_code):
-        return
+        return False
     client = _client(
         settings.api_key,
         settings.api_base_url,
         "Add an API key in the sidebar, or set API_KEY in a .env file.",
     )
     if client is None:
-        return
+        return False
     if not settings.image_model:
         st.error("Set an image model in the sidebar.")
-        return
+        return False
     try:
         prompt = compose_prompt(general, extra, outfit=outfit)
     except ValueError as error:
         st.error(str(error))
-        return
+        return False
 
-    names = ", ".join(path.name for path in sources)
+    cancel = threading.Event()
     holder: dict[str, object] = {}
+    names = ", ".join(path.name for path in sources)
 
     def work() -> None:
+        if cancel.is_set():
+            return
         try:
             holder["image_path"] = generate_mannequin_image(
                 client,
@@ -222,48 +306,54 @@ def _generate_photo(
         except Exception as error:
             holder["error"] = error
 
-    elapsed = _tick("Creating the Instagram image…", work)
-    if "error" in holder:
-        photo = GeneratedPhoto(source_name=names, error=str(holder["error"]), elapsed_seconds=elapsed)
-    else:
-        photo = GeneratedPhoto(
-            source_name=names,
-            image_path=str(holder["image_path"]),
-            elapsed_seconds=elapsed,
-        )
-    st.session_state["photos"] = [photo]
+    thread = threading.Thread(target=work, daemon=True)
+    st.session_state["active_job"] = {
+        "kind": "image",
+        "label": "Creating the Instagram image…",
+        "thread": thread,
+        "cancel": cancel,
+        "holder": holder,
+        "started": time.perf_counter(),
+        "names": names,
+    }
+    st.session_state["image_job"] = True
+    thread.start()
+    return True
 
 
-def _generate_text(
+def _start_text_job(
     sources: list[Path],
     settings: SidebarInput,
     general: str,
     extra: str,
     suit_code: str,
     outfit: OutfitDetails,
-) -> None:
+) -> bool:
     if not _ready(sources, suit_code):
-        return
+        return False
     client = _client(
         settings.text_api_key,
         settings.text_api_base_url,
         "Add a DeepSeek API key in the sidebar, or set TEXT_API_KEY in a .env file.",
     )
     if client is None:
-        return
+        return False
     if not settings.text_model:
         st.error("Set a text model in the sidebar.")
-        return
+        return False
     try:
         prompt = compose_prompt(general, extra, suit_code, outfit=outfit)
     except ValueError as error:
         st.error(str(error))
-        return
+        return False
 
-    names = ", ".join(path.name for path in sources)
+    cancel = threading.Event()
     holder: dict[str, object] = {}
+    names = ", ".join(path.name for path in sources)
 
     def work() -> None:
+        if cancel.is_set():
+            return
         try:
             holder["result"] = generate_marketing_text(
                 client,
@@ -276,29 +366,16 @@ def _generate_text(
         except Exception as error:
             holder["error"] = error
 
-    elapsed = _tick("Writing the Instagram caption…", work)
-    if "error" in holder:
-        item = MarketingText(source_name=names, error=str(holder["error"]), elapsed_seconds=elapsed)
-    else:
-        text, text_path = holder["result"]
-        item = MarketingText(
-            source_name=names,
-            text=str(text),
-            text_path=str(text_path),
-            elapsed_seconds=elapsed,
-        )
-    st.session_state["texts"] = [item]
-
-
-def _tick(label: str, work: Callable[[], None]) -> float:
-    """Run work off the main thread and show the seconds already spent."""
     thread = threading.Thread(target=work, daemon=True)
+    st.session_state["active_job"] = {
+        "kind": "text",
+        "label": "Writing the Instagram caption…",
+        "thread": thread,
+        "cancel": cancel,
+        "holder": holder,
+        "started": time.perf_counter(),
+        "names": names,
+    }
+    st.session_state["image_job"] = True
     thread.start()
-    started = time.perf_counter()
-    status = st.empty()
-    while thread.is_alive():
-        seconds = int(time.perf_counter() - started)
-        status.info(f"{label} {seconds} s")
-        thread.join(timeout=1)
-    status.empty()
-    return time.perf_counter() - started
+    return True

@@ -6,6 +6,8 @@ Recreate the outfit exactly as shown in the uploaded garment-reference images. P
 
 Decide the neck design only from the reference photos. Copy that neck design exactly: depth, width, shape (round, V, square, boat, keyhole, high collar, or whatever is shown), embroidery or lace around the neck, collar, buttons, placket, front slit or opening, and finishing. Do not invent a different neckline, do not deepen or close the neck, and do not add or remove neck embroidery that is not in the photos.
 
+Sleeves are usually full long sleeves. Keep full-length sleeves by default. Use short sleeves or sleeveless only when the reference photos clearly show that. Do not shorten long sleeves, and do not invent short sleeves when the photos show full sleeves.
+
 First decide whether a dupatta exists in the reference photos. Check every uploaded photo. If the shop outfit details say Dupatta: yes or Dupatta: no, follow that. If they say information not available, decide only from the photos. If any photo clearly shows a dupatta, include it. If no photo shows a dupatta, do not invent one and do not drape any scarf, shawl, or extra fabric over the shoulders. Keep only the pieces that are actually shown. Never assume a dupatta by default.
 
 Keep the same number of pieces shown in the reference images. If the shop outfit details name how many pieces (2 or 3), follow that exact count. If they say information not available, decide from the photos. A three-piece outfit is a kameez or shirt, a bottom, and a dupatta, and must be used only when all three are visible. A two-piece outfit must include only the two pieces actually shown. Never turn a two-piece set into a three-piece set by adding a dupatta.

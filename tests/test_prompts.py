@@ -30,6 +30,8 @@ def test_checked_in_prompts_keep_the_piece_rules() -> None:
     assert "fashion mannequin" in image_prompt
     assert "not on a real person" in image_prompt
     assert "no real person" in image_prompt
+    assert "Sleeves are usually full long sleeves" in image_prompt
+    assert "Sleeves are usually full long sleeves" in text_prompt
     assert "never assume a dupatta by default" in text_prompt
     for prompt in (image_prompt, text_prompt):
         assert "shalwar" in prompt

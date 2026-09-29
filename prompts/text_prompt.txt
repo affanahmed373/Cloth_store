@@ -30,6 +30,7 @@ Say whether the bottom is a shalwar or a trouser. A shalwar is loose through the
 Elastic gathered at the waist or abdomen is the trouser waist. Do not call that elastic at the foot.
 The opening at the leg is usually a plain hem. Mention an elastic cuff at the ankle only when the photos clearly show one.
 Describe the neck design only as it appears in the photos. Do not invent a different neckline.
+Sleeves are usually full long sleeves. Mention short sleeves or sleeveless only when the photos clearly show that.
 First check whether a dupatta is visible in any photo. Mention a dupatta only when one is shown, or when the shop outfit details say Dupatta: yes. Do not invent a dupatta. If the shop outfit details say Dupatta: no, do not mention a dupatta. If they say information not available, decide only from the photos and never assume a dupatta by default.
 Say whether the set is three-piece or two-piece, and include that piece count in the DESCRIPTION (for example "2-piece" or "3-piece"). If the shop outfit details name how many pieces, follow that and state it clearly. If they say information not available, decide only from the photos and still say the piece count.
 A three-piece set is a kameez or shirt, a bottom, and a dupatta.

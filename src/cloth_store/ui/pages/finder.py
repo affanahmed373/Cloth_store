@@ -53,9 +53,7 @@ def render_page() -> None:
     if st.session_state.pop("cancel_notice", None):
         st.warning(CANCEL_NOTICE)
 
-    if _poll_active_job():
-        return
-
+    _collect_finished_job()
     busy = _job_busy()
     settings = render_sidebar(disabled=busy)
     folder = resolve_folder(settings.folder_text)
@@ -64,8 +62,12 @@ def render_page() -> None:
         st.stop()
 
     images = list_images(folder)
+    photos = st.session_state.get("photos") or []
+    texts = st.session_state.get("texts") or []
     if not images:
         st.info(f"No photos in {folder}. Add JPG, PNG, or WEBP files, then refresh this page.")
+        if photos or texts:
+            render_post(photos[0] if photos else None, texts[0] if texts else None)
         st.stop()
 
     selected = render_gallery(images, disabled=busy)
@@ -87,11 +89,14 @@ def render_page() -> None:
     needs_code = not suit_code.strip()
     if needs_code:
         st.caption("Enter a suit code before generating an image.")
+
     generate_image, generate_text = st.columns(2)
     with generate_image:
         make_photo = st.button("Generate image", type="primary", disabled=busy or needs_code)
     with generate_text:
         make_text = st.button("Generate text", disabled=busy)
+
+    _render_job_status()
 
     if make_photo and not needs_code and _ready(selected, suit_code) and _image_ready(settings):
         if _start_photo_job(selected, settings, image_prompt, extra, suit_code, outfit):
@@ -104,9 +109,21 @@ def render_page() -> None:
     if photos or texts:
         render_post(photos[0] if photos else None, texts[0] if texts else None)
 
+    if busy and _thread_is_alive():
+        time.sleep(1)
+        st.rerun()
+
 
 def _job_busy() -> bool:
     return st.session_state.get("active_job") is not None
+
+
+def _thread_is_alive() -> bool:
+    job = st.session_state.get("active_job")
+    if job is None:
+        return False
+    thread = job.get("thread")
+    return bool(thread is not None and thread.is_alive())
 
 
 def cancel_active_job(session: dict) -> None:
@@ -121,12 +138,24 @@ def cancel_active_job(session: dict) -> None:
     session["cancel_notice"] = True
 
 
-def _poll_active_job() -> bool:
-    """Show progress and Cancel while a job runs. True means this run should stop here."""
+def _collect_finished_job() -> None:
+    """Move a finished background job into the result panels."""
     job = st.session_state.get("active_job")
     if job is None:
-        return False
+        return
+    thread = job.get("thread")
+    if thread is not None and thread.is_alive():
+        return
+    _finish_active_job(job)
+    st.session_state.pop("active_job", None)
+    st.session_state["image_job"] = False
 
+
+def _render_job_status() -> None:
+    """Progress and cancel stay under the generate buttons."""
+    job = st.session_state.get("active_job")
+    if job is None:
+        return
     st.info(f"{job['label']} {int(time.perf_counter() - job['started'])} s")
     st.caption("Cancel frees the page so you can fix the settings and try again.")
     st.warning(
@@ -136,17 +165,6 @@ def _poll_active_job() -> bool:
     if st.button("Cancel and free the page", type="secondary"):
         cancel_active_job(st.session_state)
         st.rerun()
-
-    thread = job["thread"]
-    if thread.is_alive():
-        time.sleep(1)
-        st.rerun()
-
-    _finish_active_job(job)
-    st.session_state.pop("active_job", None)
-    st.session_state["image_job"] = False
-    st.rerun()
-    return True
 
 
 def _finish_active_job(job: dict) -> None:
@@ -190,7 +208,7 @@ def _prompt_editors(*, disabled: bool = False) -> tuple[str, str]:
             "Image prompt",
             IMAGE_PROMPT_PATH,
             DEFAULT_IMAGE_PROMPT,
-            "image_prompt_mannequin",
+            "image_prompt_full_sleeves",
             disabled=disabled,
         )
     with text_column:
@@ -198,7 +216,7 @@ def _prompt_editors(*, disabled: bool = False) -> tuple[str, str]:
             "Text prompt",
             TEXT_PROMPT_PATH,
             DEFAULT_TEXT_PROMPT,
-            "text_prompt_piece_count",
+            "text_prompt_full_sleeves",
             disabled=disabled,
         )
     return image_prompt, text_prompt

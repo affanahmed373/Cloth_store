@@ -13,6 +13,8 @@ Recreate the outfit exactly as shown in the uploaded garment-reference images. P
 
 Decide the neck design only from the reference photos. Copy that neck design exactly: depth, width, shape (round, V, square, boat, keyhole, high collar, or whatever is shown), embroidery or lace around the neck, collar, buttons, placket, front slit or opening, and finishing. Do not invent a different neckline, do not deepen or close the neck, and do not add or remove neck embroidery that is not in the photos.
 
+Sleeves are usually full long sleeves. Keep full-length sleeves by default. Use short sleeves or sleeveless only when the reference photos clearly show that. Do not shorten long sleeves, and do not invent short sleeves when the photos show full sleeves.
+
 First decide whether a dupatta exists in the reference photos. Check every uploaded photo. If the shop outfit details say Dupatta: yes or Dupatta: no, follow that. If they say information not available, decide only from the photos. If any photo clearly shows a dupatta, include it. If no photo shows a dupatta, do not invent one and do not drape any scarf, shawl, or extra fabric over the shoulders. Keep only the pieces that are actually shown. Never assume a dupatta by default.
 
 Keep the same number of pieces shown in the reference images. If the shop outfit details name how many pieces (2 or 3), follow that exact count. If they say information not available, decide from the photos. A three-piece outfit is a kameez or shirt, a bottom, and a dupatta, and must be used only when all three are visible. A two-piece outfit must include only the two pieces actually shown. Never turn a two-piece set into a three-piece set by adding a dupatta.
@@ -65,6 +67,7 @@ Say whether the bottom is a shalwar or a trouser. A shalwar is loose through the
 Elastic gathered at the waist or abdomen is the trouser waist. Do not call that elastic at the foot.
 The opening at the leg is usually a plain hem. Mention an elastic cuff at the ankle only when the photos clearly show one.
 Describe the neck design only as it appears in the photos. Do not invent a different neckline.
+Sleeves are usually full long sleeves. Mention short sleeves or sleeveless only when the photos clearly show that.
 First check whether a dupatta is visible in any photo. Mention a dupatta only when one is shown, or when the shop outfit details say Dupatta: yes. Do not invent a dupatta. If the shop outfit details say Dupatta: no, do not mention a dupatta. If they say information not available, decide only from the photos and never assume a dupatta by default.
 Say whether the set is three-piece or two-piece, and include that piece count in the DESCRIPTION (for example "2-piece" or "3-piece"). If the shop outfit details name how many pieces, follow that and state it clearly. If they say information not available, decide only from the photos and still say the piece count.
 A three-piece set is a kameez or shirt, a bottom, and a dupatta.

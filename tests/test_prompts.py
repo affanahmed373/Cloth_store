@@ -31,7 +31,11 @@ def test_checked_in_prompts_keep_the_piece_rules() -> None:
     assert "not on a real person" in image_prompt
     assert "no real person" in image_prompt
     assert "Sleeves are usually full long sleeves" in image_prompt
+    assert "plain white shalwar" in image_prompt
+    assert "display only" in image_prompt
     assert "Sleeves are usually full long sleeves" in text_prompt
+    assert "not included by default" in text_prompt
+    assert "upon request" in text_prompt
     assert "never assume a dupatta by default" in text_prompt
     for prompt in (image_prompt, text_prompt):
         assert "shalwar" in prompt
@@ -48,18 +52,17 @@ def test_compose_prompt_adds_the_suit_code() -> None:
     assert "Pieces: information not available" not in text
     assert "How many pieces: information not available" in text
     assert "Dupatta: information not available" in text
-    assert "Bottom: information not available" in text
+    assert "Bottom: information not available" not in text
 
 
 def test_compose_prompt_uses_chosen_outfit_details() -> None:
     text = compose_prompt(
         "Show the dress.",
         "",
-        outfit=OutfitDetails(dupatta="No", pieces="2 pieces", bottom="Trouser"),
+        outfit=OutfitDetails(dupatta="No", pieces="2 pieces"),
     )
     assert "Dupatta: no." in text
     assert "How many pieces: 2." in text
-    assert "Bottom: trouser." in text
     assert "Do not invent a dupatta" in text
     text3 = compose_prompt(
         "Show the dress.",
@@ -68,6 +71,15 @@ def test_compose_prompt_uses_chosen_outfit_details() -> None:
     )
     assert "How many pieces: 3." in text3
     assert "3-piece set in the caption" in text3
+    one_piece = compose_prompt(
+        "Show the dress.",
+        "",
+        outfit=OutfitDetails(pieces="1 piece"),
+    )
+    assert "How many pieces: 1." in one_piece
+    assert "plain white shalwar" in one_piece
+    assert "not included by default" in one_piece
+    assert "upon request" in one_piece
 
 
 def test_unset_outfit_details_are_not_a_yes() -> None:

@@ -74,11 +74,11 @@ def test_outfit_details_default_to_not_set(tmp_path: Path, monkeypatch) -> None:
     app = _with_photos(_app(), tmp_path)
     labels = {field.label: field for field in app.radio}
     assert labels["How many pieces"].value == "Not set"
-    assert labels["How many pieces"].options == ["Not set", "2 pieces", "3 pieces"]
+    assert labels["How many pieces"].options == ["Not set", "1 piece", "2 pieces", "3 pieces"]
     assert labels["Dupatta"].value == "Not set"
-    assert labels["Bottom"].value == "Not set"
     assert labels["Dupatta"].options == ["Not set", "Yes", "No"]
-    assert labels["Bottom"].options == ["Not set", "Shalwar", "Trouser"]
+    assert "Bottom" not in labels
+    assert "Add a shalwar" not in labels
 
 
 def _image_button(app: AppTest):

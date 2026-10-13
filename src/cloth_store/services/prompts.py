@@ -17,9 +17,9 @@ Sleeves are usually full long sleeves. Keep full-length sleeves by default. Use 
 
 First decide whether a dupatta exists in the reference photos. Check every uploaded photo. If the shop outfit details say Dupatta: yes or Dupatta: no, follow that. If they say information not available, decide only from the photos. If any photo clearly shows a dupatta, include it. If no photo shows a dupatta, do not invent one and do not drape any scarf, shawl, or extra fabric over the shoulders. Keep only the pieces that are actually shown. Never assume a dupatta by default.
 
-Keep the same number of pieces shown in the reference images. If the shop outfit details name how many pieces (2 or 3), follow that exact count. If they say information not available, decide from the photos. A three-piece outfit is a kameez or shirt, a bottom, and a dupatta, and must be used only when all three are visible. A two-piece outfit must include only the two pieces actually shown. Never turn a two-piece set into a three-piece set by adding a dupatta.
+Keep the same number of pieces shown in the reference images. If the shop outfit details name how many pieces (1, 2, or 3), follow that exact count. If they say information not available, decide from the photos. A one-piece outfit is the shirt. For styling in the catalog photo, add one plain white shalwar with that shirt. That white shalwar is for display only. Do not use black or any other color on the shalwar in the image. A three-piece outfit is a kameez or shirt, a bottom, and a dupatta, and must be used only when all three are visible. A two-piece outfit must include only the two pieces actually shown. Never turn a two-piece set into a three-piece set by adding a dupatta.
 
-Keep the bottom type exactly as shown. If the shop outfit details name shalwar or trouser, follow that. If they say information not available, decide from the photos. If it is a shalwar, keep it loose through the legs. If it is a trouser, keep it straight and tailored. Do not turn a shalwar into trousers or trousers into a shalwar. Do not add elastic ankle cuffs unless they are clearly visible in the reference. A gathered elastic waist does not mean the ankle is elastic. Never assume shalwar or trouser by default.
+Keep the bottom type from the photos when this is a two-piece or three-piece set. If it is a shalwar, keep it loose through the legs. If it is a trouser, keep it straight and tailored. Do not turn a shalwar into trousers or trousers into a shalwar. Do not add elastic ankle cuffs unless they are clearly visible in the reference. A gathered elastic waist does not mean the ankle is elastic. For a one-piece shirt, use a plain white shalwar only in the photo.
 
 When a dupatta is present in the references, keep it exactly as shown, including its color, print, transparency, border, embroidery, width, length, and fabric. Drape it naturally on the mannequin without covering or changing the neck design, sleeves, shirt embroidery, bottom shape, or important garment details. When no dupatta is present, leave the neck, shoulders, and chest clear of any extra fabric.
 
@@ -63,13 +63,14 @@ HASHTAGS
 Write DESCRIPTION as one paragraph in this style:
 A rich maroon embroidered suit with delicate floral detailing, elegant embroidered sleeve cuffs, matching plain trousers, and a soft matching dupatta. The graceful tassel detail and subtle shimmer make this a beautiful choice for Eid, dawats, family gatherings, weddings, and special occasions. ❤️✨
 Describe only what is visible. State the pieces you can see.
-Say whether the bottom is a shalwar or a trouser. A shalwar is loose through the leg. A trouser is a straighter pant. If the shop outfit details name shalwar or trouser, follow that. If they say information not available, decide only from the photos and never assume either by default.
+Say whether the bottom is a shalwar or a trouser. A shalwar is loose through the leg. A trouser is a straighter pant. Decide from the photos for a two-piece or three-piece set.
 Elastic gathered at the waist or abdomen is the trouser waist. Do not call that elastic at the foot.
 The opening at the leg is usually a plain hem. Mention an elastic cuff at the ankle only when the photos clearly show one.
 Describe the neck design only as it appears in the photos. Do not invent a different neckline.
 Sleeves are usually full long sleeves. Mention short sleeves or sleeveless only when the photos clearly show that.
 First check whether a dupatta is visible in any photo. Mention a dupatta only when one is shown, or when the shop outfit details say Dupatta: yes. Do not invent a dupatta. If the shop outfit details say Dupatta: no, do not mention a dupatta. If they say information not available, decide only from the photos and never assume a dupatta by default.
-Say whether the set is three-piece or two-piece, and include that piece count in the DESCRIPTION (for example "2-piece" or "3-piece"). If the shop outfit details name how many pieces, follow that and state it clearly. If they say information not available, decide only from the photos and still say the piece count.
+Say whether the set is one-piece, two-piece, or three-piece, and include that piece count in the DESCRIPTION (for example "1-piece", "2-piece", or "3-piece"). If the shop outfit details name how many pieces, follow that and state it clearly. If they say information not available, decide only from the photos and still say the piece count.
+A one-piece outfit is the shirt only in the post. The shalwar shown in the photo is styling only and is not included by default. In the DESCRIPTION, say that a plain white or plain black shalwar can be added upon request. Do not say the shalwar is included unless the shop outfit details say otherwise.
 A three-piece set is a kameez or shirt, a bottom, and a dupatta.
 A two-piece set is the kameez or shirt plus one other garment. Say whether that other garment is a dupatta or a bottom (shalwar or trouser).
 Do not call it three-piece when a dupatta or a bottom is missing, and do not mention a piece that is not in the photo.
@@ -94,15 +95,13 @@ def save_prompt(path: Path, text: str) -> None:
 
 NOT_SET = "Not set"
 DUPATTA_OPTIONS = (NOT_SET, "Yes", "No")
-PIECE_OPTIONS = (NOT_SET, "2 pieces", "3 pieces")
-BOTTOM_OPTIONS = (NOT_SET, "Shalwar", "Trouser")
+PIECE_OPTIONS = (NOT_SET, "1 piece", "2 pieces", "3 pieces")
 
 
 @dataclass(frozen=True)
 class OutfitDetails:
     dupatta: str = NOT_SET
     pieces: str = NOT_SET
-    bottom: str = NOT_SET
 
 
 def format_outfit_details(details: OutfitDetails | None) -> str:
@@ -124,7 +123,21 @@ def format_outfit_details(details: OutfitDetails | None) -> str:
             "Do not assume a dupatta by default."
         )
 
-    if chosen.pieces == "2 pieces":
+    if chosen.pieces == "1 piece":
+        lines.append(
+            "How many pieces: 1. This is a one-piece shirt. Show that shirt from the photos. "
+            "Do not call it a two-piece or three-piece set. State that it is a 1-piece shirt in the caption."
+        )
+        lines.append(
+            "Catalog styling: add one plain white shalwar with the shirt for the photo only. "
+            "Use a loose shalwar, plain white, no print, no embroidery, and no other color."
+        )
+        lines.append(
+            "Caption for a 1-piece shirt: the post sells the shirt only. The shalwar in the photo is "
+            "not included by default. Say clearly that a plain white or plain black shalwar can be "
+            "added upon request."
+        )
+    elif chosen.pieces == "2 pieces":
         lines.append(
             "How many pieces: 2. This is a two-piece outfit. Keep only the two garments shown. "
             "Do not add a third piece. State that it is a 2-piece set in the caption."
@@ -137,22 +150,9 @@ def format_outfit_details(details: OutfitDetails | None) -> str:
         )
     else:
         lines.append(
-            "How many pieces: information not available. Decide two-piece or three-piece "
-            "only from the photos, then state that piece count in the caption."
-        )
-
-    if chosen.bottom == "Shalwar":
-        lines.append(
-            "Bottom: shalwar. Keep a loose shalwar through the legs. Do not turn it into trousers."
-        )
-    elif chosen.bottom == "Trouser":
-        lines.append(
-            "Bottom: trouser. Keep a straighter trouser. Do not turn it into a shalwar."
-        )
-    else:
-        lines.append(
-            "Bottom: information not available. Decide shalwar or trouser only from the photos. "
-            "Do not assume either by default."
+            "How many pieces: information not available. Decide one-piece, two-piece, or three-piece "
+            "only from the photos, then state that piece count in the caption. "
+            "For a one-piece shirt in the photo, use a plain white shalwar for styling only."
         )
 
     lines.append(

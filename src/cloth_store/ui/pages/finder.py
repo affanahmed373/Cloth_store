@@ -20,7 +20,6 @@ from cloth_store.services.copywriter import generate_marketing_text
 from cloth_store.services.generator import generate_mannequin_image
 from cloth_store.services.library import MAX_REFERENCE_PHOTOS, list_images
 from cloth_store.services.prompts import (
-    BOTTOM_OPTIONS,
     DEFAULT_IMAGE_PROMPT,
     DEFAULT_TEXT_PROMPT,
     DUPATTA_OPTIONS,
@@ -208,7 +207,7 @@ def _prompt_editors(*, disabled: bool = False) -> tuple[str, str]:
             "Image prompt",
             IMAGE_PROMPT_PATH,
             DEFAULT_IMAGE_PROMPT,
-            "image_prompt_full_sleeves",
+            "image_prompt_white_shalwar",
             disabled=disabled,
         )
     with text_column:
@@ -216,7 +215,7 @@ def _prompt_editors(*, disabled: bool = False) -> tuple[str, str]:
             "Text prompt",
             TEXT_PROMPT_PATH,
             DEFAULT_TEXT_PROMPT,
-            "text_prompt_full_sleeves",
+            "text_prompt_shalwar_on_request",
             disabled=disabled,
         )
     return image_prompt, text_prompt
@@ -227,9 +226,11 @@ def _outfit_details(*, disabled: bool = False) -> OutfitDetails:
     st.caption(
         f"Leave a field on {NOT_SET} when you are unsure. "
         "That sends information not available in the prompt, not a yes. "
-        "How many pieces can be 2 or 3 when you know it."
+        "How many pieces can be 1, 2, or 3 when you know it. "
+        "A one-piece shirt shows a white shalwar in the photo. The caption says shalwar is not included "
+        "by default and white or black can be added on request."
     )
-    dupatta_col, pieces_col, bottom_col = st.columns(3)
+    dupatta_col, pieces_col = st.columns(2)
     with dupatta_col:
         dupatta = st.radio("Dupatta", DUPATTA_OPTIONS, horizontal=True, disabled=disabled, key="outfit_dupatta")
     with pieces_col:
@@ -240,9 +241,7 @@ def _outfit_details(*, disabled: bool = False) -> OutfitDetails:
             disabled=disabled,
             key="outfit_pieces",
         )
-    with bottom_col:
-        bottom = st.radio("Bottom", BOTTOM_OPTIONS, horizontal=True, disabled=disabled, key="outfit_bottom")
-    return OutfitDetails(dupatta=dupatta, pieces=pieces, bottom=bottom)
+    return OutfitDetails(dupatta=dupatta, pieces=pieces)
 
 
 def _image_ready(settings: SidebarInput) -> bool:

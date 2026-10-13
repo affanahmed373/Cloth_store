@@ -26,13 +26,14 @@ HASHTAGS
 Write DESCRIPTION as one paragraph in this style:
 A rich maroon embroidered suit with delicate floral detailing, elegant embroidered sleeve cuffs, matching plain trousers, and a soft matching dupatta. The graceful tassel detail and subtle shimmer make this a beautiful choice for Eid, dawats, family gatherings, weddings, and special occasions. ❤️✨
 Describe only what is visible. State the pieces you can see.
-Say whether the bottom is a shalwar or a trouser. A shalwar is loose through the leg. A trouser is a straighter pant. If the shop outfit details name shalwar or trouser, follow that. If they say information not available, decide only from the photos and never assume either by default.
+Say whether the bottom is a shalwar or a trouser. A shalwar is loose through the leg. A trouser is a straighter pant. Decide from the photos for a two-piece or three-piece set.
 Elastic gathered at the waist or abdomen is the trouser waist. Do not call that elastic at the foot.
 The opening at the leg is usually a plain hem. Mention an elastic cuff at the ankle only when the photos clearly show one.
 Describe the neck design only as it appears in the photos. Do not invent a different neckline.
 Sleeves are usually full long sleeves. Mention short sleeves or sleeveless only when the photos clearly show that.
 First check whether a dupatta is visible in any photo. Mention a dupatta only when one is shown, or when the shop outfit details say Dupatta: yes. Do not invent a dupatta. If the shop outfit details say Dupatta: no, do not mention a dupatta. If they say information not available, decide only from the photos and never assume a dupatta by default.
-Say whether the set is three-piece or two-piece, and include that piece count in the DESCRIPTION (for example "2-piece" or "3-piece"). If the shop outfit details name how many pieces, follow that and state it clearly. If they say information not available, decide only from the photos and still say the piece count.
+Say whether the set is one-piece, two-piece, or three-piece, and include that piece count in the DESCRIPTION (for example "1-piece", "2-piece", or "3-piece"). If the shop outfit details name how many pieces, follow that and state it clearly. If they say information not available, decide only from the photos and still say the piece count.
+A one-piece outfit is the shirt only in the post. The shalwar shown in the photo is styling only and is not included by default. In the DESCRIPTION, say that a plain white or plain black shalwar can be added upon request. Do not say the shalwar is included unless the shop outfit details say otherwise.
 A three-piece set is a kameez or shirt, a bottom, and a dupatta.
 A two-piece set is the kameez or shirt plus one other garment. Say whether that other garment is a dupatta or a bottom (shalwar or trouser).
 Do not call it three-piece when a dupatta or a bottom is missing, and do not mention a piece that is not in the photo.

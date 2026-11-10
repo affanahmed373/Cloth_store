@@ -1,6 +1,18 @@
-# Cloth store
+# Clothing Store Catalog Studio
 
-Small Streamlit app for an online clothing shop. Put a dress photo in a folder, press **Generate image**, and an OpenAI-compatible API returns a catalog photo of that outfit on a fashion mannequin. **Generate text** writes the listing copy. The general prompts are saved in `prompts/`, and your own notes are added for that run only.
+Multimodal Streamlit app for a Pakistani clothing store in Germany. Select up to 10 outfit photos, press **Generate image**, and an OpenAI-compatible image model returns one Instagram catalog portrait (1080×1350, 4:5) of that outfit on a fashion mannequin. **Generate text** writes the caption with DeepSeek from the same photos.
+
+This is the maintained repo (CV name: Clothing Store Catalog Studio). An older public copy lived at `instagram-catalog-posts` and is no longer updated.
+
+```text
+Photos of one outfit
+        |
+        +-- Generate image --> OpenAI-compatible image edit --> Instagram portrait
+        |
+        +-- Generate text  --> DeepSeek (or another chat model) --> caption
+```
+
+Shop name, address and tagline in `prompts/text_prompt.txt` are the placeholders `SHOP_NAME`, `SHOP_ADDRESS` and `SHOP_TAGLINE`. Notes typed in the app are added for that run only. API keys and shop photos stay local (`.env`, `data/images/`, `data/output/` are not committed).
 
 ## Setup
 
@@ -11,23 +23,17 @@ pip install -r requirements.txt
 cp .env.example .env
 ```
 
-Put the API keys in `.env`. The image call stays on an OpenAI-compatible server. Captions use DeepSeek:
-
 ```bash
 API_KEY=sk-...
 API_BASE_URL=https://api.openai.com/v1
 IMAGE_MODEL=gpt-image-1-mini
-```
 
-In the sidebar, pick another OpenAI image model when needed: `gpt-image-1`, `gpt-image-1.5`, `gpt-image-2`, or `chatgpt-image-latest`. The stronger models follow the suit photos more closely and cost more. Captions still use DeepSeek:
-
-```bash
 TEXT_API_KEY=sk-...
 TEXT_API_BASE_URL=https://api.deepseek.com
 TEXT_MODEL=deepseek-flash
 ```
 
-The same fields are in the sidebar, so you can switch servers without editing code.
+In the sidebar you can switch image models (`gpt-image-1`, `gpt-image-1.5`, `gpt-image-2`, `chatgpt-image-latest`) without editing code. Stronger models follow the suit photos more closely and cost more.
 
 ## Run
 
@@ -35,9 +41,7 @@ The same fields are in the sidebar, so you can switch servers without editing co
 streamlit run app.py
 ```
 
-Put JPG, PNG, or WEBP dress photos in `data/images/`, or type another folder path in the sidebar. Select up to 10 photos of the same outfit, enter the suit code, then press **Generate image** or **Generate text**.
-
-**Generate image** sends those photos in one call and saves one portrait, `instaimage-<code>.png`, at 1080×1350 (4:5) for Instagram. **Generate text** is a separate call. It sends the same photos to DeepSeek with the text prompt and writes one caption, which can also be reused on Facebook. Both files land in `data/output/`.
+Put JPG, PNG or WEBP photos in `data/images/`, or type another folder path in the sidebar. Enter the suit code, then press **Generate image** or **Generate text**. Outputs land in `data/output/`.
 
 ## Tests
 
@@ -45,6 +49,8 @@ Put JPG, PNG, or WEBP dress photos in `data/images/`, or type another folder pat
 pip install -r requirements-dev.txt
 pytest
 ```
+
+Tests use stand-in API clients, so no key or photo is required.
 
 ## Layout
 
@@ -59,7 +65,12 @@ src/cloth_store/
     styles.css
     components/                sidebar, gallery, prompt editors, results
     pages/                     the catalog screen
-data/images/                   dress photos you send
-data/output/                   catalog photos and marketing text
+data/images/                   dress photos you send (local)
+data/output/                   catalog photos and marketing text (local)
 tests/                         pytest, no live API key required
 ```
+
+## Related
+
+- Shop assistant: [multi-cloud-retail-agent](https://github.com/affanahmed373/multi-cloud-retail-agent)
+- Planned: Streamlit Community Cloud demo (see `ROADMAP.md`)

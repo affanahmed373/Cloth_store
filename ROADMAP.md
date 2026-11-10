@@ -3,6 +3,19 @@
 Planned improvements. Each item lists the skill it proves and what "done" means.
 Add the skill to the CV only after the item is pushed.
 
+## 0. Go public and live demo (priority: highest)
+Proves: a multimodal app anyone can open from the CV link.
+- [ ] Make this repo public (GitHub Settings → Change visibility). The CV already links `github.com/affanahmed373/Cloth_store`, so sent CVs start working without a change.
+- [ ] Make `instagram-catalog-posts` private (or archive it). Its README already points here.
+- [x] Update this README, the profile README (`affanahmed373`), and the catalog copy's README to name this as the maintained repo.
+- [ ] Pin this repo instead of `instagram-catalog-posts`.
+- [ ] Remove the tracked `.DS_Store` (`git rm --cached .DS_Store`).
+- [ ] Deploy to Streamlit Community Cloud (free, deploys from GitHub).
+- [ ] Hosted mode: `st.file_uploader` instead of the folder picker (the desktop folder window cannot open on a server). Keep the folder picker for local use.
+- [ ] Visitors paste their own OpenAI key in the sidebar (already supported); no shared key on the public app. Never store uploaded photos.
+- [ ] Before/after gallery from `examples/` so visitors see the result without a key (with the shop's permission).
+Done when: the app link is in the README and the profile README, and a visitor without a key still sees example output.
+
 ## 1. Background job queue (priority: medium)
 Proves: task queues (Celery + Redis), long-running AI jobs.
 - [ ] Run image and caption generation as Celery tasks with Redis as broker; the Streamlit UI polls job status.
@@ -20,7 +33,18 @@ Proves: structured outputs.
 - [ ] Return caption, hashtags, fabric, colours and suggested price as a Pydantic model; export as CSV for the shop catalog.
 - [ ] Feed the same fields into `multi-cloud-retail-agent`'s `products.json`.
 
-## 4. Repo hygiene (priority: high)
+## 4. Offer posts for the spice shop (priority: medium)
+Proves: the same multimodal pipeline serves a second business through prompts, not new code.
+- [ ] Prompt sets per shop in `prompts/` (`clothing/`, `spice/`) and a shop selector in the sidebar.
+- [ ] Spice shop post: product photos plus offer text (product, price, dates) into one 1080x1350 image, for Eid, Ramadan and weekly offers.
+- [ ] Caption in Urdu, German and English.
+Done when: one app makes posts for both shops and the README shows one example of each.
+
+## 5. Google review replies (priority: low)
+Proves: human-in-the-loop drafting.
+- [ ] Paste a review, get a short reply draft in the reviewer's language; the owner edits and copies it. Nothing is posted automatically.
+
+## 6. Repo hygiene (priority: high)
 - [ ] GitHub Actions: lint + pytest on every push (tests already exist).
 - [ ] Before/after example images in the README (with the shop's permission).
-- [ ] Decide on this repo vs `instagram-catalog-posts`: merge or archive one so the CV links a single repo.
+- [x] Decide on this repo vs `instagram-catalog-posts`: keep this one (the CV links it, longer history), archive the other.

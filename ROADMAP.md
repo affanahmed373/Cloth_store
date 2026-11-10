@@ -5,11 +5,12 @@ Add the skill to the CV only after the item is pushed.
 
 ## 0. Go public and live demo (priority: highest)
 Proves: a multimodal app anyone can open from the CV link.
-- [ ] Make this repo public (GitHub Settings → Change visibility). The CV already links `github.com/affanahmed373/Cloth_store`, so sent CVs start working without a change.
-- [ ] Make `instagram-catalog-posts` private (or archive it). Its README already points here.
+- [x] Make this repo public. The CV already links `github.com/affanahmed373/Cloth_store`.
+- [x] Make `instagram-catalog-posts` private. Its README already points here.
 - [x] Update this README, the profile README (`affanahmed373`), and the catalog copy's README to name this as the maintained repo.
-- [ ] Pin this repo instead of `instagram-catalog-posts`.
-- [ ] Remove the tracked `.DS_Store` (`git rm --cached .DS_Store`).
+- [x] Set the GitHub description to Clothing Store Catalog Studio.
+- [ ] Pin order on the profile (GitHub UI only; no API): 1 retail agent, 2 Cloth_store, 3 spice shop, 4 evals, 5 governance, 6 GNNxEval.
+- [x] Remove the tracked `.DS_Store`.
 - [ ] Deploy to Streamlit Community Cloud (free, deploys from GitHub).
 - [ ] Hosted mode: `st.file_uploader` instead of the folder picker (the desktop folder window cannot open on a server). Keep the folder picker for local use.
 - [ ] Visitors paste their own OpenAI key in the sidebar (already supported); no shared key on the public app. Never store uploaded photos.

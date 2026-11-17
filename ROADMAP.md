@@ -3,6 +3,11 @@
 Planned improvements. Each item lists the skill it proves and what "done" means.
 Add the skill to the CV only after the item is pushed.
 
+## Frontend showcase and hosting
+- Frontend: **Streamlit** (`app.py`), kept.
+- Demo hosting: Streamlit Community Cloud, free, deploys from GitHub; it sleeps when idle (section 0).
+- No cloud bill: visitors paste their own OpenAI key, and no shared key is stored on the app.
+
 ## 0. Go public and live demo (priority: highest)
 Proves: a multimodal app anyone can open from the CV link.
 - [x] Make this repo public. The CV already links `github.com/affanahmed373/Cloth_store`.
